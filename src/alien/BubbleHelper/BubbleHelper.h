@@ -25,6 +25,8 @@
 
 #include <OS.h>
 
+class BTextView;
+
 class BubbleHelper
 {
 	public:
