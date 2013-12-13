@@ -47,7 +47,7 @@ SRCS= About.cpp CharList.cpp CharSetView.cpp CharView.cpp FontList.cpp \
 
 #	specify the resource definition files to use
 #	full path or a relative path to the resource file can be used.
-RDEFS= 
+RDEFS= Fontboy.rdef aboutjpg.rdef
 	
 #	specify the resource files to use. 
 #	full path or a relative path to the resource file can be used.
