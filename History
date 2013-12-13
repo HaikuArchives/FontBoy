@@ -1,0 +1,74 @@
+History
+
+Version 0.9.7 (4/19/2003)
+- No more drawing of NoCharacter symbols
+
+Version 0.9.6e (4/19/2003)
+- Fixed crashing bug when loading of buttonimages failed
+- Reworked dynamic content layout in properties window
+- Resize button in properties window can now be locked using right mousebutton (sorry, no visual feedback)
+
+Version 0.9.6d (4/5/2003)
+- Reduced window refreshs when updateting preferences
+- Fixed crashing bug when closing Fontboy
+- Better ListView handling in preferences window
+- Faster properties window popup
+
+Version 0.9.6c (1/23/2002)
+- Removed some memoryleaks 
+- Removed some unnecessary redraws
+- "@" now default character in properties window 
+- Added dynamic view & window limits in properties window
+- Added switch for tooltips
+- Spooky tooltips in properties window banned
+- Controls for column settings united
+- Fontlist will now get refreshed at startup if necessary
+- Fixed refresh of fontlist
+- Fixed bug where the first change of a color didn't reached the app
+
+Version 0.9.6b (12/25/2002)
+- Reorganisation of preferences window
+- Some bugfixes i don't remember
+
+Version 0.9.6a (09/04/2000)
+- Added Splitpane to detailwindow
+- Added support for Mousewheel in detailwindow
+- Fontsize and displaytext will now updated live too!
+- Changed title of detailwindow to fontname + fontstyle
+- Enhanced keyboard navigation in detailwindow
+
+Version 0.9.6 (08/03/2000)
+- most classes rewritten and enhanced
+
+Version 0.9.5g (3/12/99) (internal beta)
+- added customization of colors
+- rearanged Preferences window
+
+Version 0.9.5e (3/12/99) (internal beta)
+- added single char preview in Properties window
+
+Version 0.9.5d (3/4/99)
+- fixed bug in defaulttext setting
+- added support for Fontdrops using
+  Dianne Hackborn's FFont class
+- added support for HTML Fonttagdrops
+  (receiving programm must support
+  dropmessages of type "text/html")
+- added minimal support for UTF8 fontpreview
+  (try PageUp/PageDown in Charset view)
+
+Version 0.9.5c (3/3/99)
+- fixed a bug which caused Fontboy to crash at start
+  when no settingsfile was available
+
+Version 0.9.5b (3/3/99)
+- Propertieswindow is now zoomable
+- added minimal Drag & Drop support
+
+Version 0.9.5a (2/25/99)
+- fixed bug which displayed in
+  multiple Propertywindows the same font
+- Fontboy should now be aware of Input Methods
+
+Version 0.9.5 (2/22/99)
+- first public release
