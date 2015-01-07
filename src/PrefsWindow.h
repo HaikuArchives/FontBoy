@@ -36,8 +36,6 @@ class PrefsWindow : public BWindow {
 		virtual void	MessageReceived(BMessage*);
 		virtual bool	QuitRequested(void);
 		
-		void			AddToolTips();
-		void			RemoveToolTips();
 		void			GetPreferences();
 		void			SetPreferences();
 		void			UpdatePrefs(bool);
@@ -57,10 +55,9 @@ class PrefsWindow : public BWindow {
 		BMenuField		*aafield, *tsfield;
 		BMenuItem		*item;
 		BTextControl	*text;
-		BCheckBox		*drawheights, *drawborder, *splashscreen, *liveupdate, *tooltips;
+		BCheckBox		*drawheights, *drawborder, *splashscreen, *liveupdate;
 		ColorButton		*cmbg, *cmdisplay, *cminfo, *cmstroke, *cmheights, *cmselect, *cpbg, *cpdisplay, *cpselect, *cpstroke;
 		StatusSlider	*slider;
-		BubbleHelper	*bhelper;
 		int32			current_color, snumcols;
 };
 

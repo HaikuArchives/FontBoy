@@ -36,7 +36,7 @@ APP_MIME_SIG=
 #	in folder names do not work well with this makefile.
 SRCS= About.cpp CharList.cpp CharSetView.cpp CharView.cpp FontList.cpp \
 	Fontboy.cpp ListView.cpp ListWindow.cpp Prefs.cpp PrefsWindow.cpp \
-	PropWindow.cpp alien/BubbleHelper/BubbleHelper.cpp \
+	PropWindow.cpp \
 	alien/FFont/FFont.cpp alien/SplitPane/SplitPane.cpp \
 	alien/SplitPane/SplitPaneConfig.cpp \
 	alien/TPreferences/TPreferences.cpp \

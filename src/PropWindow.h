@@ -13,7 +13,6 @@
 #include <String.h>
 #include <string.h>
 
-#include "BubbleHelper.h"
 #include "CharSetView.h"
 #include "CharView.h"
 #include "SplitPane.h"
@@ -43,7 +42,6 @@ public:
 			void	SetTitle(void);
 			void	GetFamilyAndStyle(font_family*, font_style*);
 			void	SetFamilyAndStyle(const font_family, const font_style);
-	BubbleHelper*	GetToolTipHandler(void);
 			void	SelectChar(uint16);
 			void	Update();
 			void	LockSplitpane(bool);
@@ -131,7 +129,6 @@ public:
 		BPicture	*GetPictureFromBitmap(const char*);
 
 private:
-	BubbleHelper	*bhelper;
 	CharView		*cview;
 
 	BView			*targetview;

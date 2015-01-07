@@ -66,14 +66,8 @@ PrefsWindow::PrefsWindow(BRect rect)
 	aRect.bottom = aRect.top + 20;
 	aRect.right = aRect.left + font.StringWidth("Show splashscreen") + 50;
 	splashscreen = new BCheckBox(aRect, "", "Show splashscreen",  new BMessage(M_SPLASHSCREEN));
+	splashscreen->SetToolTip("Show splashscreen when starting Fontboy");
 	gbox->AddChild(splashscreen);
-
-	aRect.top = aRect.bottom + 8;
-	aRect.bottom = aRect.top + 20;
-	aRect.right = aRect.left + font.StringWidth("Show Tool Tips") + 50;
-	tooltips = new BCheckBox(aRect, "", "Show Tool Tips",  new BMessage(M_TOOLTIPS));
-	gbox->AddChild(tooltips);
-
 
 	/* View for color preferences in fontlist
 	 ****************************************/
@@ -104,6 +98,7 @@ PrefsWindow::PrefsWindow(BRect rect)
 	BRect r = aRect;
 	r.right = left_rbound;
 	cmbg = new ColorButton(r, B_EMPTY_STRING, "Background", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_LIST);
+	cmbg->SetToolTip("Select color for background");
 	cmbg->SetDivider(90);
 	c1box->AddChild(cmbg);
 
@@ -111,6 +106,7 @@ PrefsWindow::PrefsWindow(BRect rect)
 	r.left = right_lbound;
 	cmdisplay = new ColorButton(r, B_EMPTY_STRING, "Display Text", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_LIST);
 	cmdisplay->SetDivider(90);
+	cmdisplay->SetToolTip("Select color for fontinformation");
 	c1box->AddChild(cmdisplay);
 
 	aRect.OffsetBy(0, CB_HEIGHT + CB_VOFFSET);
@@ -118,12 +114,14 @@ PrefsWindow::PrefsWindow(BRect rect)
 	r = aRect;
 	r.right = left_rbound;
 	cmselect = new ColorButton(r, B_EMPTY_STRING, "Selection", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_LIST);
+	cmselect->SetToolTip("Select color for selection");
 	cmselect->SetDivider(90);
 	c1box->AddChild(cmselect);
 
 	r = aRect;
 	r.left = right_lbound;
 	cmstroke = new ColorButton(r, B_EMPTY_STRING, "Borders", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_LIST);
+	cmstroke->SetToolTip("Select color for borders");
 	cmstroke->SetDivider(90);
 	c1box->AddChild(cmstroke);
 
@@ -132,12 +130,14 @@ PrefsWindow::PrefsWindow(BRect rect)
 	r = aRect;
 	r.right = left_rbound;
 	cmheights = new ColorButton(r, B_EMPTY_STRING, "Height Lines", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_LIST);
+	cmheights->SetToolTip("Select color for height lines");
 	cmheights->SetDivider(90);
 	c1box->AddChild(cmheights);
 
 	r = aRect;
 	r.left = right_lbound;
 	cminfo = new ColorButton(r, B_EMPTY_STRING, "Info Text", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_LIST);
+	cminfo->SetToolTip("Select color for infotext");
 	cminfo->SetDivider(90);
 	c1box->AddChild(cminfo);
 
@@ -147,6 +147,7 @@ PrefsWindow::PrefsWindow(BRect rect)
 	aRect.right -= 20;
 	aRect.left = aRect.right - font.StringWidth("Default Colors") - 30;
 	cdefault = new BButton(aRect, "", "Default Colors", new BMessage(M_C1DEFAULT));
+	cdefault->SetToolTip("Set default colors");
 	cdefault->SetEnabled(true);
 	c1box->AddChild(cdefault);
 
@@ -176,12 +177,14 @@ PrefsWindow::PrefsWindow(BRect rect)
 	r = aRect;
 	r.right = left_rbound;
 	cpbg = new ColorButton(r, B_EMPTY_STRING, "Background", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_DETAIL);
+	cpbg->SetToolTip("Select color for background");
 	cpbg->SetDivider(90);
 	c2box->AddChild(cpbg);
 
 	r = aRect;
 	r.left = right_lbound;
 	cpdisplay = new ColorButton(r, B_EMPTY_STRING, "Display Text", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_DETAIL);
+	cpdisplay->SetToolTip("Select color for font");
 	cpdisplay->SetDivider(90);
 	c2box->AddChild(cpdisplay);
 
@@ -190,12 +193,14 @@ PrefsWindow::PrefsWindow(BRect rect)
 	r = aRect;
 	r.right = left_rbound;
 	cpselect = new ColorButton(r, B_EMPTY_STRING, "Selection", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_DETAIL);
+	cpselect->SetToolTip("Select color for selection");
 	cpselect->SetDivider(90);
 	c2box->AddChild(cpselect);
 
 	r = aRect;
 	r.left = right_lbound;
 	cpstroke = new ColorButton(r, B_EMPTY_STRING, "Borders", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_DETAIL);
+	cpstroke->SetToolTip("Select color for borders");
 	cpstroke->SetDivider(90);
 	c2box->AddChild(cpstroke);
 
@@ -205,6 +210,7 @@ PrefsWindow::PrefsWindow(BRect rect)
 	aRect.right -= 20;
 	aRect.left = aRect.right - font.StringWidth("Default Colors") - 30;
 	cdefault = new BButton(aRect, "", "Default Colors", new BMessage(M_C2DEFAULT));
+	cdefault->SetToolTip("Set default colors");
 	cdefault->SetEnabled(true);
 	c2box->AddChild(cdefault);
 
@@ -234,6 +240,7 @@ PrefsWindow::PrefsWindow(BRect rect)
 	slider->SetKeyIncrementValue(1);
 	slider->SetLimitLabels("6pt", "1000pt");
 	slider->SetModificationMessage(new BMessage(M_FONTSIZE));
+	slider->SetToolTip("Change size of fonts");
 	dbox->AddChild(slider);
 
 	aRect.left = alignl;
@@ -253,6 +260,7 @@ PrefsWindow::PrefsWindow(BRect rect)
 	aafield = new BMenuField(aRect, "", "Columns:", numcols);
 	aafield->SetFont(&font);
 	aafield->SetDivider(font.StringWidth("Example Text:") + 12.0);
+	aafield->SetToolTip("Change number of columns");
 	dbox->AddChild(aafield);
 
 	aRect.left = alignl;
@@ -267,6 +275,7 @@ PrefsWindow::PrefsWindow(BRect rect)
 	text->SetDivider(font.StringWidth("Example Text:") + 12.0);
 	text->SetLabel("Example Text:");
 	text->SetViewColor(def_viewcolor);
+	text->SetToolTip("Change example text");
 	dbox->AddChild(text);
 
 	aRect.left = alignl;
@@ -274,6 +283,7 @@ PrefsWindow::PrefsWindow(BRect rect)
 	aRect.top = aRect.bottom + 20;
 	aRect.bottom = aRect.top + 20;
 	drawborder = new BCheckBox(aRect, "", "Draw Border",  new BMessage(M_DRAWBORDER));
+	drawborder->SetToolTip("Draw borders for each font");
 	dbox->AddChild(drawborder);
 
 	aRect.left = alignl;
@@ -281,6 +291,7 @@ PrefsWindow::PrefsWindow(BRect rect)
 	aRect.top = aRect.bottom + 8;
 	aRect.bottom = aRect.top + 20;
 	drawheights = new BCheckBox(aRect, "", "Draw Heights",  new BMessage(M_DRAWHEIGHTS));
+	drawheights->SetToolTip("Show lines for fontheights");
 	dbox->AddChild(drawheights);
 
 	aRect = outbox->Bounds();
@@ -288,6 +299,7 @@ PrefsWindow::PrefsWindow(BRect rect)
 	aRect.top = aRect.bottom - 20;
 	aRect.right = aRect.left + font.StringWidth("Live update!") + 50;
 	liveupdate = new BCheckBox(aRect, "", "Live update!",  new BMessage(M_LIVEUPDATE));
+	liveupdate->SetToolTip("Settings apply live to the changes");
 	outbox->AddChild(liveupdate);
 
 	aRect = outbox->Bounds();
@@ -295,6 +307,7 @@ PrefsWindow::PrefsWindow(BRect rect)
 	aRect.top = aRect.bottom - 20;
 	aRect.left = aRect.right - font.StringWidth("Revert") - 30;
 	revert = new BButton(aRect, "", "Revert", new BMessage(M_REVERT));
+	revert->SetToolTip("Revert to last saved settings");
 	revert->SetEnabled(false);
 	outbox->AddChild(revert);
 
@@ -303,70 +316,14 @@ PrefsWindow::PrefsWindow(BRect rect)
 	apply = new BButton(aRect, "", "Apply", new BMessage(M_APPLY));
 	apply->MakeDefault(true);
 	apply->SetEnabled(false);
+	apply->SetToolTip("Apply settings");
 	outbox->AddChild(apply);
 
-	AddToolTips();
 	GetPreferences();
 }
 
 PrefsWindow::~PrefsWindow(void)
 {
-	RemoveToolTips();
-}
-
-void PrefsWindow::AddToolTips()
-{
-	if ((bhelper = fontboy->bhelper) != NULL) {
-		bhelper->SetHelp(splashscreen, "Show splashscreen when starting Fontboy");
-		bhelper->SetHelp(cmbg, "Select color for background");
-		bhelper->SetHelp(cmdisplay, "Select color for fontinformation");
-		bhelper->SetHelp(cminfo, "Select color for infotext");
-		bhelper->SetHelp(cmstroke, "Select color for borders");
-		bhelper->SetHelp(cmheights, "Select color for height lines");
-		bhelper->SetHelp(cmselect, "Select color for selection");
-		bhelper->SetHelp(cpbg, "Select color for background");
-		bhelper->SetHelp(cpdisplay, "Select color for font");
-		bhelper->SetHelp(cpselect, "Select color for selection");
-		bhelper->SetHelp(cpstroke, "Select color for borders");
-		bhelper->SetHelp(cdefault, "Set default colors");
-		bhelper->SetHelp(slider, "Change size of fonts");
-		bhelper->SetHelp(aafield, "Change number of columns");
-		bhelper->SetHelp(text, "Change example text");
-		bhelper->SetHelp(drawborder, "Draw borders for each font");
-		bhelper->SetHelp(drawheights, "Show lines for fontheights");
-		bhelper->SetHelp(liveupdate, "Settings apply live to the changes");
-		bhelper->SetHelp(revert, "Revert to last saved settings");
-		bhelper->SetHelp(apply, "Apply settings");
-		bhelper->SetHelp(tooltips, "Show tool tips");
-	}
-}
-
-void PrefsWindow::RemoveToolTips()
-{
-	if ((bhelper = fontboy->bhelper) != NULL) {
-		bhelper = fontboy->bhelper;
-		bhelper->SetHelp(splashscreen, NULL);
-		bhelper->SetHelp(cmbg, NULL);
-		bhelper->SetHelp(cmdisplay, NULL);
-		bhelper->SetHelp(cminfo, NULL);
-		bhelper->SetHelp(cmstroke, NULL);
-		bhelper->SetHelp(cmheights, NULL);
-		bhelper->SetHelp(cmselect, NULL);
-		bhelper->SetHelp(cpbg, NULL);
-		bhelper->SetHelp(cpdisplay, NULL);
-		bhelper->SetHelp(cpselect, NULL);
-		bhelper->SetHelp(cpstroke, NULL);
-		bhelper->SetHelp(cdefault, NULL);
-		bhelper->SetHelp(slider, NULL);
-		bhelper->SetHelp(aafield, NULL);
-		bhelper->SetHelp(drawborder, NULL);
-		bhelper->SetHelp(drawheights, NULL);
-		bhelper->SetHelp(liveupdate, NULL);
-		bhelper->SetHelp(text, NULL);
-		bhelper->SetHelp(revert, NULL);
-		bhelper->SetHelp(apply, NULL);
-		bhelper->SetHelp(tooltips, NULL);
-	}
 }
 
 void PrefsWindow::GetPreferences()
@@ -388,7 +345,6 @@ void PrefsWindow::GetPreferences()
 	drawheights->SetValue(prefs->GetDrawHeights());
 	drawborder->SetValue(prefs->GetDrawBorder());
 	splashscreen->SetValue(prefs->GetSplashScreen());
-	tooltips->SetValue(prefs->GetToolTips());
 	liveupdate->SetValue(prefs->GetLiveupdate());
 	text->SetText(prefs->GetDisplayText()->String());
 	cmbg->SetValue(prefs->GetMBgColor());
@@ -415,7 +371,6 @@ void PrefsWindow::SetPreferences()
 	prefs->SetDrawHeights(drawheights->Value());
 	prefs->SetDrawBorder(drawborder->Value());
 	prefs->SetSplashScreen(splashscreen->Value());
-	prefs->SetToolTips(tooltips->Value());
 	prefs->SetLiveupdate(liveupdate->Value());
 	prefs->SetDisplayText(text->Text());
 
@@ -469,7 +424,6 @@ void PrefsWindow::MessageReceived(BMessage* msg)
 
 		// General
 		case M_SPLASHSCREEN:
-		case M_TOOLTIPS:
 			UpdatePrefs();
 			break;
 

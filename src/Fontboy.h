@@ -10,12 +10,6 @@
 #include <string>
 #include <stdio.h>
 
-#define USE_BUBBLEHELP
-
-#ifdef USE_BUBBLEHELP
-#include "BubbleHelper.h"
-#endif
-
 #define APP_SIG "application/x-vnd.madison.fontboy"
 #define VERSION "0.9.7"
 
@@ -39,10 +33,6 @@ class Fontboy: public BApplication {
 				void	RefreshFontList(void);
 
 				Prefs	*prefs;
-
-#ifdef USE_BUBBLEHELP
-		BubbleHelper	*bhelper;
-#endif
 
 	private:
 		ListWindow		*mainwindow;

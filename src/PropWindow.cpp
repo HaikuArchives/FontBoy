@@ -88,13 +88,6 @@ void PropWindow::Zoom(BPoint origin, float width, float heigh)
 	BWindow::Zoom(origin, width, heigh);
 }
 
-BubbleHelper* PropWindow::GetToolTipHandler()
-{
-	Fontboy *fm = dynamic_cast<Fontboy*>(be_app);
-
-	return fm->bhelper;
-}
-
 void PropWindow::SetTitle()
 {
 	// Set title
@@ -647,12 +640,6 @@ TopView::TopView(BRect frame, BView *target)
 
 TopView::~TopView(void)
 {
-	//	Remove Tool tips
-	if (bhelper) {
-		bhelper->SetHelp(npage, NULL);
-		bhelper->SetHelp(ppage, NULL);
-	}
-
 	if (ttf_icon != NULL)
 		delete ttf_icon;
 
@@ -713,6 +700,7 @@ void TopView::AttachedToWindow(void)
 										B_FOLLOW_RIGHT | B_FOLLOW_TOP);
 			AddChild(npage);
 			npage->SetTarget(targetview);
+			npage->SetToolTip("Show next page");
 			delete npoff;
 		}
 		delete npon;
@@ -733,7 +721,7 @@ void TopView::AttachedToWindow(void)
 										B_FOLLOW_RIGHT | B_FOLLOW_TOP);
 			AddChild(ppage);
 			ppage->SetTarget(targetview);
-
+			ppage->SetToolTip("Show previous page");
 			delete ppoff;
 		}
 		delete ppon;
@@ -776,13 +764,7 @@ void TopView::AttachedToWindow(void)
 
 void TopView::AllAttached()
 {
-//	Add Tool tips
-	PropWindow	*propwin = dynamic_cast<PropWindow*>(Window());
-	bhelper = propwin->GetToolTipHandler();
-	if (bhelper) {
-		bhelper->SetHelp(npage, "Show next page");
-		bhelper->SetHelp(ppage, "Show previous page");
-	}
+
 }
 
 void TopView::MessageReceived(BMessage *msg)

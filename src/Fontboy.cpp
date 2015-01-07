@@ -18,7 +18,6 @@
 
 Fontboy::Fontboy(void)
 		:BApplication(APP_SIG),
-	bhelper(NULL),
 	mainwindow(NULL),
 	prefwindow(NULL),
 	proplist(NULL),
@@ -50,10 +49,6 @@ struct font_cache_info {
 		ShowSplashScreen(true);
 
 	fontlist = new FontList();
-
-#ifdef USE_BUBBLEHELP
-	bhelper = new BubbleHelper();
-#endif
 
 	BRect mrect;
 	prefs->GetMainRect(mrect);
@@ -106,7 +101,6 @@ Fontboy::~Fontboy(void)
 	prefs->SavePrefs();
 
 	delete proplist;
-	delete bhelper;
 	delete fontlist;
 	delete prefs;
 };
@@ -248,10 +242,6 @@ void Fontboy::ApplySettings(int prefs_area)
 
 	// recalc settings
 	prefs->Update();
-
-	// update tooltips
-	if (bhelper != NULL)
-		bhelper->EnableHelp(bool(prefs->GetToolTips()));
 
 	// send update message to fontlist
 	if (prefs->IsListWindowForUpdate())
