@@ -193,6 +193,7 @@ void ListView::MouseDown(BPoint point)
 			if (item) {
 				be_app->PostMessage(item->Message()->what);
 			}
+			return;
 		}
 
 		dragrect.Set(point.x - 3, point.y - 3, point.x + 3, point.y + 3);
