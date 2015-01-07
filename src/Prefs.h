@@ -49,8 +49,6 @@ class Prefs
 				void	SetDrawBorder(int32 ival);
 				int32	GetSplashScreen();
 				void	SetSplashScreen(int32 ival);
-				int32	GetToolTips();
-				void	SetToolTips(int32 ival);
 				int32	GetLiveupdate();
 				void	SetLiveupdate(int32 ival);
 				BString	*GetDisplayText();
@@ -122,7 +120,6 @@ class Prefs
 						autoadjust,					// Automatic adjustment of columns
 						drawborder,					// Draw Borders
 						splashscreen,				// Show splashscreen
-						tooltips,					// Show tooltips
 						liveupdate,					// Use Liveupdate
 						splitpanepos;				// Position of splitpane
 

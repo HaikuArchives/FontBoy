@@ -76,8 +76,6 @@ void Prefs::LoadPrefs()
 			active_prefs.autoadjust = false;
 		if (prefs->FindInt32("splashscreen", &active_prefs.splashscreen) != B_OK)
 			active_prefs.splashscreen = true;
-		if (prefs->FindInt32("tooltips", &active_prefs.tooltips) != B_OK)
-			active_prefs.tooltips = true;
 		if (prefs->FindInt32("liveupdate", &active_prefs.liveupdate) != B_OK)
 			active_prefs.liveupdate = false;
 
@@ -133,7 +131,6 @@ void Prefs::SavePrefs()
 		prefs->SetInt32("drawborder", active_prefs.drawborder);
 		prefs->SetInt32("autoadjust", active_prefs.autoadjust);
 		prefs->SetInt32("splashscreen", active_prefs.splashscreen);
-		prefs->SetInt32("tooltips", active_prefs.tooltips);
 		prefs->SetInt32("liveupdate", active_prefs.liveupdate);
 		prefs->SetString("displaytext", GetDisplayText()->String());
 		prefs->SetData("mbgcolor", B_RGB_COLOR_TYPE, &active_prefs.mbg_color, sizeof(rgb_color));
@@ -223,17 +220,6 @@ int32 Prefs::GetSplashScreen()
 void Prefs::SetSplashScreen(int32 ival)
 {
 	active_prefs.splashscreen = ival;
-}
-
-
-int32 Prefs::GetToolTips()
-{
-	return active_prefs.tooltips;
-}
-
-void Prefs::SetToolTips(int32 ival)
-{
-	active_prefs.tooltips = ival;
 }
 
 int32 Prefs::GetLiveupdate()
