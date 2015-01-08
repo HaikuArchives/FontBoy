@@ -136,7 +136,6 @@ void ListView::MouseDown(BPoint point)
 	struct fnode	*fontptr;
 	BPopUpMenu		*popup;
 	BMenuItem		*item;
-	BMessage		*dragmsg;
 	BString			dragtext;
 	BPoint			dragpoint;
 	BRect			rect, dragrect;
@@ -203,24 +202,24 @@ void ListView::MouseDown(BPoint point)
 			GetMouse(&dragpoint, &dragbuttons, true);
 			if (!dragrect.Contains(dragpoint)) {
 #ifndef FFont_Support
-				dragmsg = new BMessage('Font');
+				BMessage dragmsg('Font');
 #else
-				dragmsg = new BMessage('!FNT');
+				BMessage dragmsg('!FNT');
 				font.SetFamilyAndStyle(fontptr->family, fontptr->style);
 				font.SetSize(prefs->GetFontSize());
-				if(AddMessageFont(dragmsg, "font", &font) != B_NO_ERROR) { 
+				if(AddMessageFont(&dragmsg, "font", &font) != B_NO_ERROR) { 
 					printf("Error while adding FFont class to Drag & Drop Message!\n");
 				}
 #endif
 				dragtext = fontptr->family;
 				dragtext += " ";
 				dragtext += fontptr->style;
-				dragmsg->AddData("text/plain", B_MIME_TYPE, dragtext.String(), dragtext.Length());
+				dragmsg.AddData("text/plain", B_MIME_TYPE, dragtext.String(), dragtext.Length());
 	
 				dragtext = "<FONT FACE=\"";
 				dragtext += fontptr->family;
 				dragtext += "\"></FONT>\0";
-				dragmsg->AddData("text/html", B_MIME_TYPE, dragtext.String(), dragtext.Length());
+				dragmsg.AddData("text/html", B_MIME_TYPE, dragtext.String(), dragtext.Length());
 	
 				// calc rectangle for fontname
 				BFont font(be_plain_font);
@@ -262,8 +261,7 @@ void ListView::MouseDown(BPoint point)
 					dbmp->RemoveChild(dview);
 					dbmp->Unlock();
 					delete dview;
-	 				DragMessage(dragmsg, dbmp, B_OP_ALPHA, BPoint(10, 10));
-	 				delete dragmsg;
+	 				DragMessage(&dragmsg, dbmp, B_OP_ALPHA, BPoint(10, 10));
 	 				break;
 				}
 			}
