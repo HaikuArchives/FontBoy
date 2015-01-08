@@ -263,6 +263,8 @@ void ListView::MouseDown(BPoint point)
 					dbmp->Unlock();
 					delete dview;
 	 				DragMessage(dragmsg, dbmp, B_OP_ALPHA, BPoint(10, 10));
+	 				delete dragmsg;
+	 				break;
 				}
 			}
 		}
