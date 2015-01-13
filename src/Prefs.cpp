@@ -23,7 +23,7 @@ Prefs::Prefs()
 	default_prefs.drawheights = false;
 	default_prefs.drawborder = true;
 	default_prefs.autoadjust = false;
-	default_prefs.displaytext = "The brown fox jumps over the lazy dog";
+	default_prefs.displaytext = "The quick brown fox jumps over the lazy dog.";
 	default_prefs.mbg_color = def_mbg_color;
 	default_prefs.mdisplay_color = def_mdisplay_color;
 	default_prefs.minfo_color = def_minfo_color;
