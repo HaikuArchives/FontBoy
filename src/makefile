@@ -40,10 +40,11 @@ SRCS= About.cpp CharList.cpp CharSetView.cpp CharView.cpp FontList.cpp \
 	alien/FFont/FFont.cpp alien/SplitPane/SplitPane.cpp \
 	alien/SplitPane/SplitPaneConfig.cpp \
 	alien/TPreferences/TPreferences.cpp \
+	toolclasses/Colors/ColorItem.cpp \
+	toolclasses/Colors/ColorPreview.cpp \
 	toolclasses/StatusSlider/StatusSlider.cpp \
-	toolclasses/MultiBoxView/MultiBoxView.cpp \
-	toolclasses/ColorButton/ColorButton.cpp \
-	toolclasses/ColorButton/PaletteWindow.cpp
+	toolclasses/MultiBoxView/MultiBoxView.cpp 
+
 
 #	specify the resource definition files to use
 #	full path or a relative path to the resource file can be used.

@@ -31,7 +31,7 @@ ListWindow::ListWindow(BRect rect)
 
 	menu = new BMenu("Edit");
 
-	menu->AddItem(item = new BMenuItem("Preferences" B_UTF8_ELLIPSIS, new BMessage(M_SETTINGS), 'S'));
+	menu->AddItem(item = new BMenuItem("Settings" B_UTF8_ELLIPSIS, new BMessage(M_SETTINGS), ','));
 	item->SetTarget(be_app);
 	menu_bar->AddItem(menu);
 

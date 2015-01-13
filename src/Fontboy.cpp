@@ -45,9 +45,6 @@ struct font_cache_info {
 	proplist = new BList();
 	prefs = new Prefs();
 
-	if (prefs->GetSplashScreen())		
-		ShowSplashScreen(true);
-
 	fontlist = new FontList();
 
 	BRect mrect;
@@ -146,7 +143,6 @@ void Fontboy::MessageReceived(BMessage* msg)
 			break;
 
 		case M_APPLYSETTINGS:
-//		case M_TOOLTIPS:
 			ApplySettings(Prefs::AREA_ALL);
 			break;
 

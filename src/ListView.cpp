@@ -108,7 +108,7 @@ void ListView::DrawContentBox(int32 element)
 		
 			// copy and maybe truncate text to display
 			SetHighColor(prefs->GetMDisplayColor());
-			strcpy(atext, (const char *)prefs->GetDisplayText()->String());
+			strcpy(atext, (const char *)prefs->GetDisplayText().String());
 			*textinput = *textoutput = atext;
 			font.GetTruncatedStrings(textinput, 1, B_TRUNCATE_END, cwidth - leftdist, textoutput);
 			DrawString(atext, point);
@@ -220,7 +220,7 @@ void ListView::MouseDown(BPoint point)
 				dragtext += fontptr->family;
 				dragtext += "\"></FONT>\0";
 				dragmsg.AddData("text/html", B_MIME_TYPE, dragtext.String(), dragtext.Length());
-	
+
 				// calc rectangle for fontname
 				BFont font(be_plain_font);
 				font.SetFamilyAndStyle(fontptr->fsysvalue);
@@ -299,7 +299,7 @@ void ListView::Init()
 
 	SetAutoColumns(prefs->GetAutoAdjust());
 
-	float swidth = font.StringWidth(prefs->GetDisplayText()->String());
+	float swidth = font.StringWidth(prefs->GetDisplayText().String());
 	swidth += swidth / 8.0;
 
 	if (prefs->GetAutoAdjust()) {
