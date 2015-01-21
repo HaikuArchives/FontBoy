@@ -6,12 +6,19 @@
 #include "MsgVals.h"
 #include <Debug.h>
 
+#include <Button.h>
+#include <Catalog.h>
+#include <GroupLayoutBuilder.h>
+#include <LayoutBuilder.h>
+#include <Locale.h>
+#include <Messenger.h>
+#include <SpaceLayoutItem.h>
+#include <TabView.h>
+
 PrefsWindow::PrefsWindow(BRect rect)
-:BWindow(rect, "Preferences", B_TITLED_WINDOW, B_NOT_RESIZABLE | B_NOT_ZOOMABLE | B_ASYNCHRONOUS_CONTROLS)
+:BWindow(rect, "Settings", B_TITLED_WINDOW, B_NOT_RESIZABLE | B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS | B_ASYNCHRONOUS_CONTROLS)
 {
 	BFont			font(be_plain_font);
-	BRect			aRect;
-	BStringItem		*lv_item;
 	const int		ncols = 8;
 	char			atext[64];
 	const rgb_color	sfillcolor = { 160, 200, 240, 0 };
@@ -19,234 +26,84 @@ PrefsWindow::PrefsWindow(BRect rect)
 	fontboy = dynamic_cast<Fontboy*>(be_app);
 	prefs = fontboy->prefs;
 
-	ResizeTo(400.0, 300.0);
-
-	aRect = Bounds();
-	outbox = new BBox(aRect, NULL, 0, B_WILL_DRAW, B_PLAIN_BORDER);
-	AddChild(outbox);
-
-	aRect.InsetBy(10, 10);
-	aRect.bottom -= 50;
-
-	BRect lRect = aRect;
-	lRect.right = lRect.left + 80;
-	lView = new BOutlineListView(lRect, "ListView");
-
-	lView->AddItem(new BStringItem("General"));
-	lView->AddItem(lv_item = new BStringItem("List"));
-	lView->AddUnder(new BStringItem("Colors"), lv_item);
-	lView->AddUnder(new BStringItem("Display"), lv_item);
-	lView->AddItem(lv_item = new BStringItem("Details"));
-	lView->AddUnder(new BStringItem("Colors"), lv_item);
-	lView->SetSelectionMessage(new BMessage(M_PREFS_LV_SELECT));
-	outbox->AddChild(new BScrollView("scroll_cities", lView, B_FOLLOW_LEFT | B_FOLLOW_TOP, 0, false, false));
-	lView->Select(0);
-	lView->MakeFocus(true);
-
-//	olView->SetViewColor(def_viewcolor); 
-//	outbox->AddChild(lView);
-
-	aRect.left += lView->Frame().Width() + 10;
-	BRect boxRect = aRect;
-
-	float rightb = aRect.right - 10;
-	float alignl = aRect.left + 10;
-	float alignr = (aRect.right - aRect.left) / 2 + 10;
-
-	/* View for general preferences
-	 *******************************/
-	gbox = new BBox(boxRect, NULL, 0, B_WILL_DRAW, B_FANCY_BORDER);
-	gbox->SetLabel("General");
-	outbox->AddChild(gbox);
-	cprefsview = gbox;
-
-	aRect = gbox->Bounds();
-	aRect.InsetBy(10, 15);
-
-	aRect.bottom = aRect.top + 20;
-	aRect.right = aRect.left + font.StringWidth("Show splashscreen") + 50;
-	splashscreen = new BCheckBox(aRect, "", "Show splashscreen",  new BMessage(M_SPLASHSCREEN));
-	splashscreen->SetToolTip("Show splashscreen when starting Fontboy");
-	gbox->AddChild(splashscreen);
-
 	/* View for color preferences in fontlist
 	 ****************************************/
-	c1box = new BBox(boxRect, NULL, 0, B_WILL_DRAW, B_FANCY_BORDER);
-	c1box->SetLabel("Colors");
-	outbox->AddChild(c1box);
-	c1box->Hide();
 
-	// Mainwindow
-	aRect = c1box->Bounds();
-	aRect.InsetBy(25, 30);
+	// Set up list of color attributes
+	fAttrList = new BListView("AttributeList", B_SINGLE_SELECTION_LIST);
 
-//	aRect.bottom = aRect.top + 3 * (CB_HEIGHT + CB_VOFFSET) + 15;
-//	mbox = new BBox(aRect, "List", 0, B_WILL_DRAW, B_FANCY_BORDER);
-//	mbox->SetLabel("List");
-//	c1box->AddChild(mbox);
+	BScrollView* fScrollView = new BScrollView("ScrollView", fAttrList, 0, false, true);
+	fScrollView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
-//	aRect = mbox->Bounds();
-//	aRect.InsetBy(15, 15);
-	aRect.bottom = aRect.top + CB_HEIGHT;
+	rgb_color col;
+	cmbg = new ColorItem("List background", LIST_WINDOW_COLOR, col);
+	fAttrList->AddItem(cmbg);
+	cmdisplay = new ColorItem("List text", LIST_WINDOW_COLOR, col);
+	fAttrList->AddItem(cmdisplay);
+	cmselect = new ColorItem("List selection", LIST_WINDOW_COLOR, col);
+	fAttrList->AddItem(cmselect);
+	cmstroke = new ColorItem("List borders", LIST_WINDOW_COLOR, col);
+	fAttrList->AddItem(cmstroke);
+	cmheights = new ColorItem("List height lines", LIST_WINDOW_COLOR, col);
+	fAttrList->AddItem(cmheights);
+	cminfo = new ColorItem("List info text", LIST_WINDOW_COLOR, col);
+	fAttrList->AddItem(cminfo);	
+	
+	cpbg = new ColorItem("Details background", DETAILS_WINDOW_COLOR, col);
+	fAttrList->AddItem(cpbg);
+	cpdisplay = new ColorItem("Details text", DETAILS_WINDOW_COLOR, col);
+	fAttrList->AddItem(cpdisplay);
+	cpselect = new ColorItem("Details selection", DETAILS_WINDOW_COLOR, col);
+	fAttrList->AddItem(cpselect);
+	cpstroke = new ColorItem("Details borders", DETAILS_WINDOW_COLOR, col);
+	fAttrList->AddItem(cpstroke);
 
-	float left_rbound = (aRect.right - aRect.left - 14) / 2 + aRect.left;
-	float right_lbound = (aRect.right - aRect.left - 14) / 2 + 14 +aRect.left;
-	rightb = aRect.right;
-	alignl = aRect.left;
-	alignr = (aRect.right - aRect.left) / 2 + aRect.left;
+	BRect wellrect(0, 0, 50, 50);
+	fColorPreview = new ColorPreview(wellrect, new BMessage(M_COLOR_DROPPED), 0);
 
-	BRect r = aRect;
-	r.right = left_rbound;
-	cmbg = new ColorButton(r, B_EMPTY_STRING, "Background", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_LIST);
-	cmbg->SetToolTip("Select color for background");
-	cmbg->SetDivider(90);
-	c1box->AddChild(cmbg);
+	fColorPreview->SetExplicitAlignment(BAlignment(B_ALIGN_HORIZONTAL_CENTER, 
+			B_ALIGN_BOTTOM));
 
-	r = aRect;
-	r.left = right_lbound;
-	cmdisplay = new ColorButton(r, B_EMPTY_STRING, "Display Text", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_LIST);
-	cmdisplay->SetDivider(90);
-	cmdisplay->SetToolTip("Select color for fontinformation");
-	c1box->AddChild(cmdisplay);
+	fPicker = new BColorControl(B_ORIGIN, B_CELLS_32x8, 8.0,
+		"picker", new BMessage(M_UPDATE_COLOR));
 
-	aRect.OffsetBy(0, CB_HEIGHT + CB_VOFFSET);
+	BView* colorsView = new BView("Colors", 0);
 
-	r = aRect;
-	r.right = left_rbound;
-	cmselect = new ColorButton(r, B_EMPTY_STRING, "Selection", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_LIST);
-	cmselect->SetToolTip("Select color for selection");
-	cmselect->SetDivider(90);
-	c1box->AddChild(cmselect);
+	colorsView->SetLayout(new BGroupLayout(B_VERTICAL));
 
-	r = aRect;
-	r.left = right_lbound;
-	cmstroke = new ColorButton(r, B_EMPTY_STRING, "Borders", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_LIST);
-	cmstroke->SetToolTip("Select color for borders");
-	cmstroke->SetDivider(90);
-	c1box->AddChild(cmstroke);
-
-	aRect.OffsetBy(0, CB_HEIGHT + CB_VOFFSET);
-
-	r = aRect;
-	r.right = left_rbound;
-	cmheights = new ColorButton(r, B_EMPTY_STRING, "Height Lines", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_LIST);
-	cmheights->SetToolTip("Select color for height lines");
-	cmheights->SetDivider(90);
-	c1box->AddChild(cmheights);
-
-	r = aRect;
-	r.left = right_lbound;
-	cminfo = new ColorButton(r, B_EMPTY_STRING, "Info Text", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_LIST);
-	cminfo->SetToolTip("Select color for infotext");
-	cminfo->SetDivider(90);
-	c1box->AddChild(cminfo);
-
-	aRect = c1box->Bounds();
-	aRect.top = aRect.bottom - 43;
-	aRect.bottom = aRect.top + 20;
-	aRect.right -= 20;
-	aRect.left = aRect.right - font.StringWidth("Default Colors") - 30;
-	cdefault = new BButton(aRect, "", "Default Colors", new BMessage(M_C1DEFAULT));
-	cdefault->SetToolTip("Set default colors");
-	cdefault->SetEnabled(true);
-	c1box->AddChild(cdefault);
-
-	/* View for color preferences in details
-	 ****************************************/
-	c2box = new BBox(boxRect, NULL, 0, B_WILL_DRAW, B_FANCY_BORDER);
-	c2box->SetLabel("Colors");
-	outbox->AddChild(c2box);
-	c2box->Hide();
-
-	// Propertieswindow
-	aRect = c2box->Bounds();
-	aRect.InsetBy(25, 30);
-//	aRect.bottom = aRect.top + 2 * (CB_HEIGHT + CB_VOFFSET) + 15;
-//	pbox = new BBox(aRect, "Details", 0, B_WILL_DRAW, B_FANCY_BORDER);
-//	pbox->SetLabel("Details");
-//	c2box->AddChild(pbox);
-
-//	aRect = pbox->Bounds();
-//	aRect.InsetBy(15, 15);
-	aRect.bottom = aRect.top + CB_HEIGHT;
-
-	rightb = aRect.right;
-	alignl = aRect.left;
-	alignr = (aRect.right - aRect.left) / 2 + aRect.left;
-
-	r = aRect;
-	r.right = left_rbound;
-	cpbg = new ColorButton(r, B_EMPTY_STRING, "Background", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_DETAIL);
-	cpbg->SetToolTip("Select color for background");
-	cpbg->SetDivider(90);
-	c2box->AddChild(cpbg);
-
-	r = aRect;
-	r.left = right_lbound;
-	cpdisplay = new ColorButton(r, B_EMPTY_STRING, "Display Text", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_DETAIL);
-	cpdisplay->SetToolTip("Select color for font");
-	cpdisplay->SetDivider(90);
-	c2box->AddChild(cpdisplay);
-
-	aRect.OffsetBy(0, CB_HEIGHT + CB_VOFFSET);
-
-	r = aRect;
-	r.right = left_rbound;
-	cpselect = new ColorButton(r, B_EMPTY_STRING, "Selection", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_DETAIL);
-	cpselect->SetToolTip("Select color for selection");
-	cpselect->SetDivider(90);
-	c2box->AddChild(cpselect);
-
-	r = aRect;
-	r.left = right_lbound;
-	cpstroke = new ColorButton(r, B_EMPTY_STRING, "Borders", B_FOLLOW_NONE, B_WILL_DRAW, NULL, M_COLCHANGE_DETAIL);
-	cpstroke->SetToolTip("Select color for borders");
-	cpstroke->SetDivider(90);
-	c2box->AddChild(cpstroke);
-
-	aRect = c2box->Bounds();
-	aRect.top = aRect.bottom - 43;
-	aRect.bottom = aRect.top + 20;
-	aRect.right -= 20;
-	aRect.left = aRect.right - font.StringWidth("Default Colors") - 30;
-	cdefault = new BButton(aRect, "", "Default Colors", new BMessage(M_C2DEFAULT));
-	cdefault->SetToolTip("Set default colors");
-	cdefault->SetEnabled(true);
-	c2box->AddChild(cdefault);
+	colorsView->AddChild(BGroupLayoutBuilder(B_VERTICAL, 0)
+		.Add(fScrollView)
+		.Add(BSpaceLayoutItem::CreateVerticalStrut(5))
+		.Add(BGroupLayoutBuilder(B_HORIZONTAL)
+			.Add(fColorPreview)
+			.Add(BSpaceLayoutItem::CreateHorizontalStrut(5))
+			.Add(fPicker)
+		)
+		.SetInsets(10, 10, 10, 10)
+	);
+	
+	fColorPreview->Parent()->SetExplicitMaxSize(
+		BSize(B_SIZE_UNSET, fPicker->Bounds().Height()));
+	fAttrList->SetSelectionMessage(new BMessage(M_ATTRIBUTE_CHOSEN));
 
 	/* View for fontlist settings
 	 ********************************/
-	dbox = new BBox(boxRect, NULL, 0, B_WILL_DRAW, B_FANCY_BORDER);
-	dbox->SetLabel("Display Parameters");
-	outbox->AddChild(dbox);
-	dbox->Hide();
+	 
+	BView* displayView = new BView("Display", 0);
+	BRect rect(0,0,0,0);
 	
-	aRect = dbox->Bounds();
-	aRect.InsetBy(10, 15);
-
-	left_rbound = (aRect.right - aRect.left - 14) / 2 + aRect.left;
-	right_lbound = (aRect.right - aRect.left - 14) / 2 + 14 +aRect.left;
-	rightb = aRect.right;
-	alignl = aRect.left;
-	alignr = (aRect.right - aRect.left) / 2 + aRect.left;
-
-	aRect.bottom = aRect.top + 50;
-	slider = new StatusSlider(aRect, "FontSize", "Font Size:", new BMessage(M_FONTSIZE), 6, 1000, B_TRIANGLE_THUMB);
+	slider = new StatusSlider(rect, "FontSize", "Font size:", new BMessage(M_FONTSIZE), 6, 360, B_TRIANGLE_THUMB);
 	slider->UseFillColor(true, &sfillcolor);
 	slider->SetUpdateText("%upt");
 	slider->SetHashMarks(B_HASH_MARKS_BOTH);
 	slider->SetValue(int32(prefs->GetFontSize()));
 	slider->SetHashMarkCount(13);
 	slider->SetKeyIncrementValue(1);
-	slider->SetLimitLabels("6pt", "1000pt");
+	slider->SetLimitLabels("6pt", "360pt");
 	slider->SetModificationMessage(new BMessage(M_FONTSIZE));
 	slider->SetToolTip("Change size of fonts");
-	dbox->AddChild(slider);
-
-	aRect.left = alignl;
-	aRect.right = aRect.left + font.StringWidth("Number of Columns:") + 100;
-	aRect.top = aRect.bottom + 16;
-	aRect.bottom = aRect.top + 20;
+	
+	
 	numcols = new BPopUpMenu("Columns");
 	for (int i = 0; i <= ncols; i++) {
 
@@ -257,73 +114,70 @@ PrefsWindow::PrefsWindow(BRect rect)
 
 		numcols->AddItem(item = new BMenuItem(atext, new BMessage(M_NUMCOLS)));
 	}
-	aafield = new BMenuField(aRect, "", "Columns:", numcols);
+	aafield = new BMenuField(rect, "", "Columns:", numcols);
 	aafield->SetFont(&font);
-	aafield->SetDivider(font.StringWidth("Example Text:") + 12.0);
+	aafield->SetDivider(font.StringWidth("Example text:") + 12.0);
 	aafield->SetToolTip("Change number of columns");
-	dbox->AddChild(aafield);
-
-	aRect.left = alignl;
-	aRect.right = rightb;
-	aRect.top = aRect.bottom + 12;
-	aRect.bottom = aRect.top + 25;
-
-	aRect.left = alignl;
-	aRect.right = rightb - 8;
-	text = new BTextControl(aRect, "", NULL, "blubber", new BMessage(M_VIEWTEXTINV));
+	
+	text = new BTextControl(rect, "", NULL, "Example text", new BMessage(M_VIEWTEXTINV));
 	text->SetModificationMessage(new BMessage(M_VIEWTEXTMOD));
-	text->SetDivider(font.StringWidth("Example Text:") + 12.0);
-	text->SetLabel("Example Text:");
+	text->SetDivider(font.StringWidth("Example text:") + 12.0);
+	text->SetLabel("Example text:");
 	text->SetViewColor(def_viewcolor);
 	text->SetToolTip("Change example text");
-	dbox->AddChild(text);
 
-	aRect.left = alignl;
-	aRect.right = aRect.left + font.StringWidth("Draw Border") + 50;
-	aRect.top = aRect.bottom + 20;
-	aRect.bottom = aRect.top + 20;
-	drawborder = new BCheckBox(aRect, "", "Draw Border",  new BMessage(M_DRAWBORDER));
+	drawborder = new BCheckBox(rect, "", "Draw border",  new BMessage(M_DRAWBORDER));
 	drawborder->SetToolTip("Draw borders for each font");
-	dbox->AddChild(drawborder);
-
-	aRect.left = alignl;
-	aRect.right = aRect.left + font.StringWidth("Draw Heights") + 50;
-	aRect.top = aRect.bottom + 8;
-	aRect.bottom = aRect.top + 20;
-	drawheights = new BCheckBox(aRect, "", "Draw Heights",  new BMessage(M_DRAWHEIGHTS));
+	
+	drawheights = new BCheckBox(rect, "", "Draw heights",  new BMessage(M_DRAWHEIGHTS));
 	drawheights->SetToolTip("Show lines for fontheights");
-	dbox->AddChild(drawheights);
-
-	aRect = outbox->Bounds();
-	aRect.InsetBy(10, 20);
-	aRect.top = aRect.bottom - 20;
-	aRect.right = aRect.left + font.StringWidth("Live update!") + 50;
-	liveupdate = new BCheckBox(aRect, "", "Live update!",  new BMessage(M_LIVEUPDATE));
-	liveupdate->SetToolTip("Settings apply live to the changes");
-	outbox->AddChild(liveupdate);
-
-	aRect = outbox->Bounds();
-	aRect.InsetBy(10, 20);
-	aRect.top = aRect.bottom - 20;
-	aRect.left = aRect.right - font.StringWidth("Revert") - 30;
-	revert = new BButton(aRect, "", "Revert", new BMessage(M_REVERT));
-	revert->SetToolTip("Revert to last saved settings");
-	revert->SetEnabled(false);
-	outbox->AddChild(revert);
-
-	aRect.right = aRect.left - 20;
-	aRect.left = aRect.right - font.StringWidth("Revert") - 30;
-	apply = new BButton(aRect, "", "Apply", new BMessage(M_APPLY));
-	apply->MakeDefault(true);
-	apply->SetEnabled(false);
-	apply->SetToolTip("Apply settings");
-	outbox->AddChild(apply);
+	
+	displayView->SetLayout(new BGroupLayout(B_VERTICAL));
+	
+	displayView->AddChild(BLayoutBuilder::Group<>(B_VERTICAL)
+		.Add(slider)
+		.Add(aafield)
+		.Add(text)
+		.Add(drawborder)
+		.Add(drawheights)
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
+	);
+	
+	fTabView = new BTabView("tabview", B_WIDTH_FROM_LABEL);
+	fTabView->AddTab(displayView);
+	fTabView->AddTab(colorsView);
 
 	GetPreferences();
+	
+	fRevertButton = new BButton(rect, "", "Revert", new BMessage(M_REVERT));
+	fRevertButton->SetToolTip("Revert to last saved settings");
+	fRevertButton->SetEnabled(false);
+
+	fDefaultButton = new BButton(rect, "", "Default", new BMessage(M_DEFAULT));
+	fDefaultButton->SetToolTip("Restore default settings");
+	fDefaultButton->SetEnabled(!prefs->IsDefault());
+
+	
+	SetLayout(new BGroupLayout(B_VERTICAL));
+
+	AddChild(BLayoutBuilder::Group<>(B_VERTICAL)
+		.Add(fTabView)
+		.AddGroup(B_HORIZONTAL)
+			.Add(fDefaultButton)
+			.Add(fRevertButton)
+			.AddGlue()
+		.End()
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
+	);
+	
+	fAttrList->Select(0);
 }
 
 PrefsWindow::~PrefsWindow(void)
 {
+	prefs->SavePrefs();
 }
 
 void PrefsWindow::GetPreferences()
@@ -344,19 +198,19 @@ void PrefsWindow::GetPreferences()
 	}
 	drawheights->SetValue(prefs->GetDrawHeights());
 	drawborder->SetValue(prefs->GetDrawBorder());
-	splashscreen->SetValue(prefs->GetSplashScreen());
-	liveupdate->SetValue(prefs->GetLiveupdate());
-	text->SetText(prefs->GetDisplayText()->String());
-	cmbg->SetValue(prefs->GetMBgColor());
-	cmdisplay->SetValue(prefs->GetMDisplayColor());
-	cminfo->SetValue(prefs->GetMInfoColor());
-	cmstroke->SetValue(prefs->GetMStrokeColor());
-	cmheights->SetValue(prefs->GetMHeightsColor());
-	cmselect->SetValue(prefs->GetMSelectColor());
-	cpbg->SetValue(prefs->GetPBgColor());
-	cpdisplay->SetValue(prefs->GetPDisplayColor());
-	cpselect->SetValue(prefs->GetPSelectColor());
-	cpstroke->SetValue(prefs->GetPStrokeColor());
+	text->SetModificationMessage(NULL);
+	text->SetText(prefs->GetDisplayText().String());
+	text->SetModificationMessage(new BMessage(M_VIEWTEXTMOD));
+	cmbg->SetColor(prefs->GetMBgColor());
+	cmdisplay->SetColor(prefs->GetMDisplayColor());
+	cminfo->SetColor(prefs->GetMInfoColor());
+	cmstroke->SetColor(prefs->GetMStrokeColor());
+	cmheights->SetColor(prefs->GetMHeightsColor());
+	cmselect->SetColor(prefs->GetMSelectColor());
+	cpbg->SetColor(prefs->GetPBgColor());
+	cpdisplay->SetColor(prefs->GetPDisplayColor());
+	cpselect->SetColor(prefs->GetPSelectColor());
+	cpstroke->SetColor(prefs->GetPStrokeColor());
 }
 
 void PrefsWindow::SetPreferences()
@@ -370,62 +224,63 @@ void PrefsWindow::SetPreferences()
 	prefs->SetNumCols(float(snumcols));
 	prefs->SetDrawHeights(drawheights->Value());
 	prefs->SetDrawBorder(drawborder->Value());
-	prefs->SetSplashScreen(splashscreen->Value());
-	prefs->SetLiveupdate(liveupdate->Value());
 	prefs->SetDisplayText(text->Text());
 
 	rgb_color col;
-	col = cmbg->ValueAsColor();
+	col = cmbg->Color();
 	prefs->SetMBgColor(&col);
-	col = cmdisplay->ValueAsColor();
+	col = cmdisplay->Color();
 	prefs->SetMDisplayColor(&col);
-	col = cminfo->ValueAsColor();
+	col = cminfo->Color();
 	prefs->SetMInfoColor(&col);
-	col = cmstroke->ValueAsColor();
+	col = cmstroke->Color();
 	prefs->SetMStrokeColor(&col);
-	col = cmheights->ValueAsColor();
+	col = cmheights->Color();
 	prefs->SetMHeightsColor(&col);
-	col = cmselect->ValueAsColor();
+	col = cmselect->Color();
 	prefs->SetMSelectColor(&col);
-	col = cpbg->ValueAsColor();
+	col = cpbg->Color();
 	prefs->SetPBgColor(&col);
-	col = cpdisplay->ValueAsColor();
+	col = cpdisplay->Color();
 	prefs->SetPDisplayColor(&col);
-	col = cpselect->ValueAsColor();
+	col = cpselect->Color();
 	prefs->SetPSelectColor(&col);
-	col = cpstroke->ValueAsColor();
+	col = cpstroke->Color();
 	prefs->SetPStrokeColor(&col);
 }
 
-void PrefsWindow::UpdatePrefs(bool force = false)
+void PrefsWindow::UpdatePrefs()
 {
-	if ((liveupdate->Value() == B_CONTROL_ON) ||
-		(force == true)) {
-		SetPreferences();
-		be_app->PostMessage(M_APPLYSETTINGS);
-		apply->SetEnabled(false);
-	}
-	else {
-		apply->SetEnabled(true);
-	}
-	revert->SetEnabled(true);
+	SetPreferences();
+	be_app->PostMessage(M_APPLYSETTINGS);
+
+	fRevertButton->SetEnabled(prefs->CanRevert());
+	fDefaultButton->SetEnabled(!prefs->IsDefault());
 }
 
 void PrefsWindow::MessageReceived(BMessage* msg)
 {
 	int32	val, item_int;
 	BStringItem	*stritem, *superitem;
+	
+	if (msg->WasDropped() && fTabView->Selection() == 1) {
+		rgb_color* color = NULL;
+		ssize_t size = 0;
 
+		if (msg->FindData("RGBColor", (type_code)'RGBC', (const void**)&color,
+				&size) == B_OK) {
+			_SetCurrentColor(*color);
+			
+			int32 currentIndex = fAttrList->CurrentSelection();
+			ColorItem* item = (ColorItem*)fAttrList->ItemAt(currentIndex);
+			prefs->SetListWindowForUpdate();
+			prefs->SetDetailWindowForUpdate();
+			UpdatePrefs();
+		}
+	}
+	
+	
 	switch(msg->what) {
-		case M_LIVEUPDATE:
-			revert->SetEnabled(false);
-			UpdatePrefs();
-			break;
-
-		// General
-		case M_SPLASHSCREEN:
-			UpdatePrefs();
-			break;
 
 		// ListView
 		case M_NUMCOLS:
@@ -434,128 +289,109 @@ void PrefsWindow::MessageReceived(BMessage* msg)
 				snumcols = val;
 			}
 
+		
 		case M_VIEWTEXTINV:
 		case M_VIEWTEXTMOD:
 		case M_FONTSIZE:
 		case M_DRAWHEIGHTS:
 		case M_DRAWBORDER:
 		case M_COLCHANGE_LIST:
-
 			prefs->SetListWindowForUpdate();
 			UpdatePrefs();
 			break;
-
-		case M_C1DEFAULT:
-			ccwindow = GetAppWindow("Fontboy color");
-			if (ccwindow != NULL) {
-				ccwindow->PostMessage(B_QUIT_REQUESTED);
-				ccwindow = NULL;
-			}
-
-			cmbg->SetValue(prefs->GetMBgDefault());
-			cmdisplay->SetValue(prefs->GetMDisplayDefault());
-			cminfo->SetValue(prefs->GetMInfoDefault());
-			cmstroke->SetValue(prefs->GetMStrokeDefault());
-			cmheights->SetValue(prefs->GetMHeightsDefault());
-			cmselect->SetValue(prefs->GetMSelectDefault());
-			prefs->SetListWindowForUpdate();
-			UpdatePrefs();
-			break;
-		
-		// Details
-		case M_C2DEFAULT:
-			ccwindow = GetAppWindow("Fontboy color");
-			if (ccwindow != NULL) {
-				ccwindow->PostMessage(B_QUIT_REQUESTED);
-				ccwindow = NULL;
-			}
-
-			cpbg->SetValue(prefs->GetPBgDefault());
-			cpdisplay->SetValue(prefs->GetPDisplayDefault());
-			cpselect->SetValue(prefs->GetPSelectDefault());
-			cpstroke->SetValue(prefs->GetPStrokeDefault());
 
 		case M_COLCHANGE_DETAIL:
 			prefs->SetDetailWindowForUpdate();
 			UpdatePrefs();
 			break;
-		
-		case M_APPLY:
-			UpdatePrefs(true);
+			
+		case M_DEFAULT: 
+			prefs->Default();
+			GetPreferences();
+			prefs->SetListWindowForUpdate();
+			prefs->SetDetailWindowForUpdate();
+			UpdatePrefs();
+			_UpdateColors();
 			break;
 		
 		case M_REVERT:
-			prefs->LoadPrefs();
+			prefs->Revert();
 			GetPreferences();
-			be_app->PostMessage(M_APPLYSETTINGS);
-			apply->SetEnabled(false);
-			revert->SetEnabled(false);
+			prefs->SetListWindowForUpdate();
+			prefs->SetDetailWindowForUpdate();
+			UpdatePrefs();
+			_UpdateColors();
 			break;
 		
-		case M_PREFS_LV_SELECT:
-			stritem = dynamic_cast<BStringItem*>(lView->ItemAt(lView->CurrentSelection()));
-
-			if (stritem != NULL) {
-				// General
-				if (!strcmp(stritem->Text(), "General")) {
-					if (cprefsview != gbox) {
-						cprefsview->Hide();
-						cprefsview = gbox;
-						cprefsview->Show();
-					}
-				}
-	
-				// List - Display
-				if (!strcmp(stritem->Text(), "Display")) {
-					if (cprefsview != dbox) {
-						cprefsview->Hide();
-						cprefsview = dbox;
-						cprefsview->Show();
-					}
-				}
-	
-				// Details - Colors
-				if (!strcmp(stritem->Text(), "Colors")) {
-					superitem = dynamic_cast<BStringItem*>(lView->Superitem(stritem));
-	
-					if (superitem != NULL) {
-						if (!strcmp(superitem->Text(), "List")) {
-							cprefsview->Hide();
-							cprefsview = c1box;
-							cprefsview->Show();
-						}
-						if (!strcmp(superitem->Text(), "Details")) {
-							cprefsview->Hide();
-							cprefsview = c2box;
-							cprefsview->Show();
-						}
-					}
-				}
-
-				// Details & List
-				if ((!strcmp(stritem->Text(), "List"))
-				 ||	(!strcmp(stritem->Text(), "Details"))) {
-					item_int = lView->IndexOf(stritem);
-	
-					if (lView->IsExpanded(item_int))
-						lView->Select(item_int + 1);
-				}
+			
+		case M_UPDATE_COLOR:
+		{
+			// Received from the color fPicker when its color changes
+			rgb_color color = fPicker->ValueAsColor();
+			_SetCurrentColor(color);
+			
+			int32 currentIndex = fAttrList->CurrentSelection();
+			ColorItem* item = (ColorItem*)fAttrList->ItemAt(currentIndex);
+			if (item != NULL) {
+				if (item->ColorType() == LIST_WINDOW_COLOR)
+					prefs->SetListWindowForUpdate();
+				else
+					prefs->SetDetailWindowForUpdate();
 			}
+			
+			UpdatePrefs();
+
 			break;
+		}
+
+		case M_ATTRIBUTE_CHOSEN:
+		{
+			// Received when the user chooses a GUI fAttribute from the list
+
+			ColorItem* item = (ColorItem*)
+				fAttrList->ItemAt(fAttrList->CurrentSelection());
+			if (item == NULL)
+				break;
+
+			rgb_color color = item->Color();
+			_SetCurrentColor(color);
+			break;
+		}
 		
 		default:
 			BWindow::MessageReceived(msg);
 	}
 }
 
+void
+PrefsWindow::_SetCurrentColor(rgb_color color)
+{
+	int32 currentIndex = fAttrList->CurrentSelection();
+	ColorItem* item = (ColorItem*)fAttrList->ItemAt(currentIndex);
+	if (item != NULL) {	
+		item->SetColor(color);
+		fAttrList->InvalidateItem(currentIndex);
+	}
+
+	fPicker->SetValue(color);
+	fColorPreview->SetColor(color);
+	fColorPreview->Invalidate();
+}
+
+
+void
+PrefsWindow::_UpdateColors()
+{
+	fAttrList->Invalidate();
+	int32 currentIndex = fAttrList->CurrentSelection();
+	ColorItem* item = (ColorItem*)fAttrList->ItemAt(currentIndex);
+	if (item != NULL) 
+		_SetCurrentColor(item->Color());
+}
+
+
 bool PrefsWindow::QuitRequested(void)
 {
-
-	ccwindow = GetAppWindow("Fontboy color");
-	if (ccwindow != NULL) {
-		ccwindow->PostMessage(B_QUIT_REQUESTED);
-		ccwindow = NULL;
-	}
 
 	BMessage msg(M_SETTINGSQUIT);
 	msg.AddRect("rect", Frame());

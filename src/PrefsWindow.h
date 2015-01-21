@@ -12,6 +12,7 @@
 #include <Box.h>
 #include <Button.h>
 #include <CheckBox.h>
+#include <ColorControl.h>
 #include <Slider.h>
 #include <ScrollView.h>
 #include <TextControl.h>
@@ -22,11 +23,10 @@
 #include <Message.h>
 #include <Messenger.h>
 
-#include "ColorButton.h"
 #include "StatusSlider.h"
+#include "ColorItem.h"
+#include "ColorPreview.h"
 
-
-enum { CB_WIDTH = 32 , CB_HEIGHT = 16 , CB_HOFFSET = 7, CB_VOFFSET = 7};
 
 class PrefsWindow : public BWindow {
 
@@ -38,27 +38,29 @@ class PrefsWindow : public BWindow {
 		
 		void			GetPreferences();
 		void			SetPreferences();
-		void			UpdatePrefs(bool);
+		void			UpdatePrefs();
 		BWindow			*GetAppWindow(char *name);
 
 	private:
+		void			_SetCurrentColor(rgb_color color);
+		void			_UpdateColors();
+		BTabView* 		fTabView; 
+		ColorPreview* 	fColorPreview;
+		BColorControl* 	fPicker;
+		BListView*		fAttrList;
 		Fontboy			*fontboy;
 		Prefs			*prefs;
-		BWindow			*ccwindow;
 
-		BView			*cprefsview;
-		BOutlineListView *lView;
-		BBox			*gbox, *c1box, *c2box, *dbox, *mbox, *pbox, *outbox;
-		BButton			*apply, *revert, *cdefault;
+		BButton			*fRevertButton, *fDefaultButton;
 		BMenu			*menu;
 		BPopUpMenu		*fontSize, *numcols;
 		BMenuField		*aafield, *tsfield;
 		BMenuItem		*item;
 		BTextControl	*text;
-		BCheckBox		*drawheights, *drawborder, *splashscreen, *liveupdate;
-		ColorButton		*cmbg, *cmdisplay, *cminfo, *cmstroke, *cmheights, *cmselect, *cpbg, *cpdisplay, *cpselect, *cpstroke;
+		BCheckBox		*drawheights, *drawborder;
+		ColorItem		*cmbg, *cmdisplay, *cminfo, *cmstroke, *cmheights, *cmselect, *cpbg, *cpdisplay, *cpselect, *cpstroke;
 		StatusSlider	*slider;
-		int32			current_color, snumcols;
+		int32			snumcols;
 };
 
 #endif /* PREFSWINDOW_H */

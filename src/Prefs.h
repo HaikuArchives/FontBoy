@@ -34,6 +34,9 @@ class Prefs
 				void	Apply(void);
 				void	Revert(void);
 				void	Update(void);
+				bool	CanRevert(void);
+				void	Default(void);
+				bool	IsDefault();
 				void	FinishUpdate(void);
 				float	GetFontSize(void);
 				void	SetFontSize(float fval);
@@ -47,12 +50,8 @@ class Prefs
 				void	SetAutoAdjust(int32 ival);
 				int32	GetDrawBorder();
 				void	SetDrawBorder(int32 ival);
-				int32	GetSplashScreen();
-				void	SetSplashScreen(int32 ival);
-				int32	GetLiveupdate();
-				void	SetLiveupdate(int32 ival);
-				BString	*GetDisplayText();
-				void	SetDisplayText(BString *astring);
+				BString	GetDisplayText();
+				void	SetDisplayText(BString astring);
 				void	SetDisplayText(const char *text);
 			rgb_color	GetMBgColor();
 			rgb_color	GetMBgDefault();
@@ -106,10 +105,11 @@ class Prefs
 	private:
 		TPreferences	*prefs;
 				bool	update_listwindow, update_detailwindow;
+				
 
 		struct prefs_data
 		{
-			BString		*displaytext;
+			BString		displaytext;
 
 			float		numcols,					// Numer of columns
 						rowheight;					// calculated rowheight
@@ -119,8 +119,6 @@ class Prefs
 			int32		drawheights,				// Draw Hieghtlines
 						autoadjust,					// Automatic adjustment of columns
 						drawborder,					// Draw Borders
-						splashscreen,				// Show splashscreen
-						liveupdate,					// Use Liveupdate
 						splitpanepos;				// Position of splitpane
 
 			rgb_color	mbg_color,					// Backgroundcolor mainwindow
@@ -140,8 +138,12 @@ class Prefs
 						propsrect,					// Position & size of propertieswindow
 						prefsrect;					// Position & size of preferenceswindow
 		};
-
+		bool			_CompareUserPrefs(prefs_data& prefs1, prefs_data& prefs2);
+		void			_CopyUserPrefs(prefs_data& prefs1, prefs_data& prefs2);
+		
 		prefs_data		active_prefs;
+		prefs_data		default_prefs;
+		prefs_data		revert_prefs;
 };
 
 

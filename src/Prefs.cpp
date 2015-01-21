@@ -18,8 +18,23 @@
 // Open the settings file and read the data.
 Prefs::Prefs()
 {
-	active_prefs.displaytext = NULL;
-
+	default_prefs.fontsize = 25;
+	default_prefs.numcols = 3;
+	default_prefs.drawheights = false;
+	default_prefs.drawborder = true;
+	default_prefs.autoadjust = false;
+	default_prefs.displaytext = "The quick brown fox jumps over the lazy dog.";
+	default_prefs.mbg_color = def_mbg_color;
+	default_prefs.mdisplay_color = def_mdisplay_color;
+	default_prefs.minfo_color = def_minfo_color;
+	default_prefs.mstroke_color = def_mstroke_color;
+	default_prefs.mheights_color = def_mheights_color;
+	default_prefs.mselect_color = def_mselect_color;
+	default_prefs.pbg_color = def_pbg_color;
+	default_prefs.pdisplay_color = def_pdisplay_color;
+	default_prefs.pselect_color = def_pselect_color;
+	default_prefs.pstroke_color = def_pstroke_color;
+	
 	// create Preferences-Object
 	prefs = new TPreferences("Fontboy_prefs");			
 	LoadPrefs();
@@ -31,14 +46,9 @@ Prefs::~Prefs()
 	SavePrefs();
 
 	delete prefs;
-	delete active_prefs.displaytext;
 }
 
 void Prefs::Apply()
-{
-}
-
-void Prefs::Revert()
 {
 }
 
@@ -53,6 +63,71 @@ void Prefs::Update()
 	font.GetHeight(&text_height);
 
 	active_prefs.rowheight = FM_ROWHEIGHT_BUFFER + text_height.ascent + text_height.descent + info_height.ascent + info_height.descent;
+	
+	
+}
+
+bool Prefs::CanRevert()
+{
+	return 	!_CompareUserPrefs(active_prefs, revert_prefs);
+}
+
+void Prefs::Revert()
+{
+	_CopyUserPrefs(active_prefs, revert_prefs);
+}
+
+bool Prefs::IsDefault()
+{
+	return 	_CompareUserPrefs(active_prefs, default_prefs);
+}
+
+void Prefs::Default()
+{
+	_CopyUserPrefs(active_prefs, default_prefs);
+}
+
+bool Prefs::_CompareUserPrefs(prefs_data& prefs1, prefs_data& prefs2)
+{
+	return 	prefs1.fontsize == prefs2.fontsize &&
+		prefs1.numcols == prefs2.numcols &&
+		prefs1.drawheights == prefs2.drawheights &&
+		prefs1.drawborder == prefs2.drawborder &&
+		prefs1.autoadjust == prefs2.autoadjust &&
+		prefs1.displaytext == prefs2.displaytext &&
+		prefs1.mbg_color == prefs2.mbg_color &&
+		prefs1.mdisplay_color == prefs2.mdisplay_color &&
+		prefs1.minfo_color == prefs2.minfo_color &&
+		prefs1.mstroke_color == prefs2.mstroke_color &&
+		prefs1.mheights_color == prefs2.mheights_color &&
+		prefs1.mselect_color == prefs2.mselect_color &&
+		prefs1.pbg_color == prefs2.pbg_color  &&
+		prefs1.pdisplay_color == prefs2.pdisplay_color &&
+		prefs1.pselect_color == prefs2.pselect_color &&
+		prefs1.pstroke_color == prefs2.pstroke_color;
+}
+
+void Prefs::_CopyUserPrefs(prefs_data& prefs1, prefs_data& prefs2)
+{
+	// Display
+	prefs1.fontsize = prefs2.fontsize;
+	prefs1.numcols = prefs2.numcols;
+	prefs1.drawheights = prefs2.drawheights;
+	prefs1.drawborder = prefs2.drawborder;
+	prefs1.autoadjust = prefs2.autoadjust;
+	prefs1.displaytext = prefs2.displaytext;
+	// Color
+	prefs1.mbg_color = prefs2.mbg_color;
+	prefs1.mdisplay_color = prefs2.mdisplay_color;
+	prefs1.minfo_color = prefs2.minfo_color;
+	prefs1.mstroke_color = prefs2.mstroke_color;
+	prefs1.mheights_color = prefs2.mheights_color;
+	prefs1.mselect_color = prefs2.mselect_color;
+	prefs1.pbg_color = prefs2.pbg_color;
+	prefs1.pdisplay_color = prefs2.pdisplay_color;
+	prefs1.pselect_color = prefs2.pselect_color;
+	prefs1.pstroke_color = prefs2.pstroke_color;
+	// Skip windows splitview settings
 }
 
 void Prefs::FinishUpdate()
@@ -65,25 +140,21 @@ void Prefs::LoadPrefs()
 {
 	if (prefs != NULL) {
 		if (prefs->FindFloat("fontsize", &active_prefs.fontsize) != B_OK)
-			active_prefs.fontsize = 25;
+			active_prefs.fontsize = default_prefs.fontsize;
 		if (prefs->FindFloat("numcols", &active_prefs.numcols) != B_OK)
-			active_prefs.numcols = 3;
+			active_prefs.numcols = default_prefs.numcols;
 		if (prefs->FindInt32("drawheights", &active_prefs.drawheights) != B_OK)
-			active_prefs.drawheights = false;
+			active_prefs.drawheights = default_prefs.drawheights;
 		if (prefs->FindInt32("drawborder", &active_prefs.drawborder) != B_OK)
-			active_prefs.drawborder = true;
+			active_prefs.drawborder = default_prefs.drawborder;
 		if (prefs->FindInt32("autoadjust", &active_prefs.autoadjust) != B_OK)
-			active_prefs.autoadjust = false;
-		if (prefs->FindInt32("splashscreen", &active_prefs.splashscreen) != B_OK)
-			active_prefs.splashscreen = true;
-		if (prefs->FindInt32("liveupdate", &active_prefs.liveupdate) != B_OK)
-			active_prefs.liveupdate = false;
+			active_prefs.autoadjust = default_prefs.autoadjust;
 
 		const char *dtext;
 		if (prefs->FindString("displaytext", &dtext) == B_OK)
-			active_prefs.displaytext = new BString(dtext);
+			active_prefs.displaytext.SetTo(dtext);
 		else
-			active_prefs.displaytext = new BString("Love is all around!\0");
+			active_prefs.displaytext = default_prefs.displaytext;
 		
 		rgb_color *col;
 		ssize_t csize;
@@ -119,6 +190,8 @@ void Prefs::LoadPrefs()
 
 		if (prefs->FindInt32("splitpanepos", &active_prefs.splitpanepos) != B_OK)
 			active_prefs.splitpanepos = 200;
+		
+		_CopyUserPrefs(revert_prefs, active_prefs);
 	}
 }
 
@@ -130,9 +203,7 @@ void Prefs::SavePrefs()
 		prefs->SetInt32("drawheights", active_prefs.drawheights);
 		prefs->SetInt32("drawborder", active_prefs.drawborder);
 		prefs->SetInt32("autoadjust", active_prefs.autoadjust);
-		prefs->SetInt32("splashscreen", active_prefs.splashscreen);
-		prefs->SetInt32("liveupdate", active_prefs.liveupdate);
-		prefs->SetString("displaytext", GetDisplayText()->String());
+		prefs->SetString("displaytext", GetDisplayText());
 		prefs->SetData("mbgcolor", B_RGB_COLOR_TYPE, &active_prefs.mbg_color, sizeof(rgb_color));
 		prefs->SetData("mdisplaycolor", B_RGB_COLOR_TYPE, &active_prefs.mdisplay_color, sizeof(rgb_color));
 		prefs->SetData("minfocolor", B_RGB_COLOR_TYPE, &active_prefs.minfo_color, sizeof(rgb_color));
@@ -149,6 +220,8 @@ void Prefs::SavePrefs()
 		prefs->SetRect("prefsrect", active_prefs.prefsrect);
 
 		prefs->SetInt32("splitpanepos", active_prefs.splitpanepos);
+		
+		_CopyUserPrefs(revert_prefs, active_prefs);
 	}
 }
 
@@ -212,40 +285,20 @@ void Prefs::SetDrawBorder(int32 ival)
 	active_prefs.drawborder = ival;
 }
 
-int32 Prefs::GetSplashScreen()
-{
-	return active_prefs.splashscreen;
-}
-
-void Prefs::SetSplashScreen(int32 ival)
-{
-	active_prefs.splashscreen = ival;
-}
-
-int32 Prefs::GetLiveupdate()
-{
-	return active_prefs.liveupdate;
-}
-
-void Prefs::SetLiveupdate(int32 ival)
-{
-	active_prefs.liveupdate = ival;
-}
-
-BString	*Prefs::GetDisplayText()
+BString	Prefs::GetDisplayText()
 {
 //_sPrintf("GetDisplayText %d %s\n", index, displaytext[index]->String());
 	return active_prefs.displaytext;
 }
 
-void Prefs::SetDisplayText(BString *astring)
+void Prefs::SetDisplayText(BString astring)
 {
-	active_prefs.displaytext->SetTo(astring->String());
+	active_prefs.displaytext = astring;
 }
 
 void Prefs::SetDisplayText(const char *text)
 {
-	active_prefs.displaytext->SetTo(text);
+	active_prefs.displaytext = text;
 }
 
 rgb_color Prefs::GetMBgColor()
