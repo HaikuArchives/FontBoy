@@ -54,7 +54,7 @@ void ListView::DrawContentBox(int32 element)
 	
 		// Fill boxes at end of list with background color
 		if (fontptr == NULL) {
-			SetHighColor(def_viewcolor);
+			SetHighColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 			// adjust rectsize for borders
 			rect.left++;
 			rect.top++;
@@ -62,14 +62,8 @@ void ListView::DrawContentBox(int32 element)
 		}
 		// Draw Fontbox
 		else {
-			if (fontptr->selected) {
-				SetHighColor(prefs->GetMSelectColor());
-				SetLowColor(prefs->GetMSelectColor());
-			}
-			else {
-				SetHighColor(prefs->GetMBgColor());
-				SetLowColor(prefs->GetMBgColor());
-			}
+			SetHighColor(prefs->GetMBgColor(fontptr->selected));
+			SetLowColor(prefs->GetMBgColor(fontptr->selected));
 			x = rect.left;
 			y = rect.top;
 			FillRect(rect);
@@ -78,7 +72,7 @@ void ListView::DrawContentBox(int32 element)
 		
 			// Stroke line for base + ascent & decent height
 			if (prefs->GetDrawHeights()) {
-				SetHighColor(prefs->GetMHeightsColor());
+				SetHighColor(prefs->GetMHeightsColor(fontptr->selected));
 				point.Set(x, y + dist);
 				point2.Set(x + cwidth, y + dist);
 				StrokeLine(point, point2);
@@ -107,14 +101,14 @@ void ListView::DrawContentBox(int32 element)
 			SetFont(&font);
 		
 			// copy and maybe truncate text to display
-			SetHighColor(prefs->GetMDisplayColor());
+			SetHighColor(prefs->GetMDisplayColor(fontptr->selected));
 			strcpy(atext, (const char *)prefs->GetDisplayText().String());
 			*textinput = *textoutput = atext;
 			font.GetTruncatedStrings(textinput, 1, B_TRUNCATE_END, cwidth - leftdist, textoutput);
 			DrawString(atext, point);
 		
 			// prepare font and text for fontinformation
-			SetHighColor(prefs->GetMInfoColor());
+			SetHighColor(prefs->GetMInfoColor(fontptr->selected));
 			point.Set(x + leftdist, y + dist + ih_base);
 			SetFont(&infofont);
 			sprintf(atext, "%s %s", fontptr->family, fontptr->style);
@@ -241,7 +235,7 @@ void ListView::MouseDown(BPoint point)
 				if (dbmp && dview) {
 					dbmp->Lock();
 					dbmp->AddChild(dview);
-					rgb_color c = prefs->GetMSelectColor();
+					rgb_color c = prefs->GetMBgColor(true);
 					c.alpha = 196;
 					dview->SetLowColor(c);
 					dview->SetHighColor(c);

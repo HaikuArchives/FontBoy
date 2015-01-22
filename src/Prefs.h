@@ -53,36 +53,32 @@ class Prefs
 				BString	GetDisplayText();
 				void	SetDisplayText(BString astring);
 				void	SetDisplayText(const char *text);
-			rgb_color	GetMBgColor();
-			rgb_color	GetMBgDefault();
+			rgb_color	GetMBgColor(bool selected = false);
 				void	SetMBgColor(rgb_color *col);
-			rgb_color	GetMDisplayColor();
-			rgb_color	GetMDisplayDefault();
+			rgb_color	GetMDisplayColor(bool selected = false);
 				void	SetMDisplayColor(rgb_color *col);
-			rgb_color	GetMInfoColor();
-			rgb_color	GetMInfoDefault();
+			rgb_color	GetMInfoColor(bool selected = false);
 				void	SetMInfoColor(rgb_color *col);
 			rgb_color	GetMStrokeColor();
-			rgb_color	GetMStrokeDefault();
 				void	SetMStrokeColor(rgb_color *col);
-			rgb_color	GetMHeightsColor();
-			rgb_color	GetMHeightsDefault();
+			rgb_color	GetMHeightsColor(bool selected = false);
 				void	SetMHeightsColor(rgb_color *col);
-			rgb_color	GetMSelectColor();
-			rgb_color	GetMSelectDefault();
-				void	SetMSelectColor(rgb_color *col);
-			rgb_color	GetPBgColor();
-			rgb_color	GetPBgDefault();
+				void	SetMSelectedBgColor(rgb_color *col);
+				void	SetMSelectedDisplayColor(rgb_color *col);
+				void	SetMSelectedInfoColor(rgb_color *col);
+				void	SetMSelectedHeightsColor(rgb_color *col);
+			rgb_color	GetPBgColor(bool selected = false);
 				void	SetPBgColor(rgb_color *col);
-			rgb_color	GetPDisplayColor();
-			rgb_color	GetPDisplayDefault();
+			rgb_color	GetPDisplayColor(bool selected = false);
 				void	SetPDisplayColor(rgb_color *col);
-			rgb_color	GetPSelectColor();
-			rgb_color	GetPSelectDefault();
-				void	SetPSelectColor(rgb_color *col);
 			rgb_color	GetPStrokeColor();
-			rgb_color	GetPStrokeDefault();
 				void	SetPStrokeColor(rgb_color *col);
+				void	SetPSelectedBgColor(rgb_color *col);
+				void	SetPSelectedDisplayColor(rgb_color *col);
+			rgb_color	GetPInactiveSelectedBgColor();
+			rgb_color	GetPInactiveSelectedDisplayColor();
+				void	SetPInactiveSelectedBgColor(rgb_color *col);
+				void	SetPInactiveSelectedDisplayColor(rgb_color *col);
 				void	SetListWindowForUpdate(void);
 				bool	IsListWindowForUpdate(void);
 				void	SetDetailWindowForUpdate(void);
@@ -126,12 +122,21 @@ class Prefs
 						minfo_color,				// Infotextcolor mainwindow
 						mstroke_color,				// Strokecolor mainwindow
 						mheights_color,				// Heightbarcolor mainwindow
-						mselect_color,				// Fontselectcolor mainwindow
-
+						
+						mselectedbg_color,			// Selected backgroundcolor mainwindow
+						mselecteddisplay_color,		// Selected fontccolor mainwindow
+						mselectedinfo_color,		// Selected infotextcolor mainwindow
+						mselectedheights_color,		// Selected heightbarcolor mainwindow
+						
 						pbg_color,					// Backgroundcolor charsetwindow
 						pdisplay_color,				// Fontcolor charsetwindow
 						pselect_color,				// Fontselectcolor charsetwindow
-						pstroke_color;				// Strokecolor charsetwindow
+						pstroke_color,				// Strokecolor charsetwindow
+						pselectedbg_color,			// Selected backgroundcolor charsetwindow
+						pselecteddisplay_color,		// Selected fontcolor charsetwindow
+						pinactiveselectedbg_color,	// Inactive selected bgcolor 
+						pinactiveselecteddisplay_color;	// Inactive selected fontcolor
+													
 
 			BRect		mainrect,					// Position & size of mainwindow
 						mviewrect,					// Position & size of mainview

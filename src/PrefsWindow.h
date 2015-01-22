@@ -51,14 +51,20 @@ class PrefsWindow : public BWindow {
 		Fontboy			*fontboy;
 		Prefs			*prefs;
 
-		BButton			*fRevertButton, *fDefaultButton;
+		BButton			*fRevertButton, *fDefaultsButton;
 		BMenu			*menu;
 		BPopUpMenu		*fontSize, *numcols;
 		BMenuField		*aafield, *tsfield;
 		BMenuItem		*item;
 		BTextControl	*text;
 		BCheckBox		*drawheights, *drawborder;
-		ColorItem		*cmbg, *cmdisplay, *cminfo, *cmstroke, *cmheights, *cmselect, *cpbg, *cpdisplay, *cpselect, *cpstroke;
+		ColorItem		*cmbg, *cmdisplay, *cminfo, *cmstroke, *cmheights, 
+						*cmselectedbg, *cmselecteddisplay, *cmselectedinfo, *cmselectedheights,
+						*cpbg, *cpdisplay, *cpstroke,
+						*cpselectedbg, *cpselecteddisplay,
+						*cpinactiveselectedbg, *cpinactiveselecteddisplay;
+						
+						
 		StatusSlider	*slider;
 		int32			snumcols;
 };

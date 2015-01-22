@@ -86,12 +86,12 @@ void CharSetView::DrawCharBox(uint16 cpos, bool selected)
 {
 	if (selected) {
 		if (IsFocus()) {
-			SetHighColor(selectColor);
-			SetLowColor(selectColor);
+			SetHighColor(selectedBgColor);
+			SetLowColor(selectedBgColor);
 		}
 		else {
-			SetHighColor(def_pselectinactive_color);
-			SetLowColor(def_pselectinactive_color);
+			SetHighColor(inactiveSelectedBgColor);
+			SetLowColor(inactiveSelectedBgColor);
 		}
 	}
 	else {
@@ -105,7 +105,11 @@ void CharSetView::DrawCharBox(uint16 cpos, bool selected)
 
 	cnode *node = clist->CharAt(cpos);
 	if (node->flag & CL_HASGLYPH) {
-		SetHighColor(textColor);
+		if (selected) 
+			SetHighColor(IsFocus() ? selectedTextColor : inactiveSelectedTextColor);
+		else 
+			SetHighColor(textColor);
+
 	
 		// Unicode to UTF8 Character encoding
 		char utf8chars[3+1];
@@ -298,6 +302,11 @@ void CharSetView::KeyDown(const char *bytes, int32 numBytes)
 				// move to index 0
 				SetCharPos(0);
 				break;
+				
+			case B_TAB:
+				// keyboard navigation
+				BView::KeyDown(bytes, numBytes);
+				break;
 
 			default: {
 				//  Unicode to UTF8 Character encoding
@@ -351,14 +360,29 @@ void CharSetView::SetTextColor(rgb_color col)
 	textColor = col;
 }
 
-void CharSetView::SetSelectColor(rgb_color col)
-{
-	selectColor = col;
-}
-
 void CharSetView::SetStrokeColor(rgb_color col)
 {
 	strokeColor = col;
+}
+
+void CharSetView::SetSelectedBGColor(rgb_color col)
+{
+	selectedBgColor = col;
+}
+
+void CharSetView::SetSelectedTextColor(rgb_color col)
+{
+	selectedTextColor = col;
+}
+
+void CharSetView::SetInactiveSelectedBGColor(rgb_color col)
+{
+	inactiveSelectedBgColor = col;
+}
+
+void CharSetView::SetInactiveSelectedTextColor(rgb_color col)
+{
+	inactiveSelectedTextColor = col;
 }
 
 void CharSetView::SetPadding(int val)
