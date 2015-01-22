@@ -214,6 +214,24 @@ void ListView::MouseDown(BPoint point)
 				dragtext += fontptr->family;
 				dragtext += "\"></FONT>\0";
 				dragmsg.AddData("text/html", B_MIME_TYPE, dragtext.String(), dragtext.Length());
+				
+				// add text_run_array
+				
+				const int entryCount = 2;
+				int32 size = sizeof(text_run_array) + (entryCount - 1) * sizeof(text_run);
+
+				text_run_array* runArray = (text_run_array*)calloc(size, 1);
+				if (runArray != NULL) {
+					runArray->count = 1;
+					const rgb_color black = {0, 0, 0, 255};
+					//font.SetSize(14);
+					new (&runArray->runs[0].font) BFont(font);
+					runArray->runs[0].color = black; 
+					new (&runArray->runs[1].font) BFont;
+					dragmsg.AddData("application/x-vnd.Be-text_run_array",
+						B_MIME_TYPE, runArray, size);
+					free(runArray);
+				}
 
 				// calc rectangle for fontname
 				BFont font(be_plain_font);
