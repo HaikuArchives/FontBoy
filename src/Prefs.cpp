@@ -29,11 +29,18 @@ Prefs::Prefs()
 	default_prefs.minfo_color = def_minfo_color;
 	default_prefs.mstroke_color = def_mstroke_color;
 	default_prefs.mheights_color = def_mheights_color;
-	default_prefs.mselect_color = def_mselect_color;
+	default_prefs.mselectedbg_color = def_mselectedbg_color;
+	default_prefs.mselecteddisplay_color = def_mselecteddisplay_color;
+	default_prefs.mselectedinfo_color = def_mselectedinfo_color;
+	default_prefs.mselectedheights_color = def_mselectedheights_color;
+	
 	default_prefs.pbg_color = def_pbg_color;
 	default_prefs.pdisplay_color = def_pdisplay_color;
-	default_prefs.pselect_color = def_pselect_color;
 	default_prefs.pstroke_color = def_pstroke_color;
+	default_prefs.pselectedbg_color = def_pselectedbg_color;
+	default_prefs.pselecteddisplay_color = def_pselecteddisplay_color;
+	default_prefs.pinactiveselectedbg_color = def_pinactiveselectedbg_color;
+	default_prefs.pinactiveselecteddisplay_color = def_pinactiveselecteddisplay_color;
 	
 	// create Preferences-Object
 	prefs = new TPreferences("Fontboy_prefs");			
@@ -100,11 +107,17 @@ bool Prefs::_CompareUserPrefs(prefs_data& prefs1, prefs_data& prefs2)
 		prefs1.minfo_color == prefs2.minfo_color &&
 		prefs1.mstroke_color == prefs2.mstroke_color &&
 		prefs1.mheights_color == prefs2.mheights_color &&
-		prefs1.mselect_color == prefs2.mselect_color &&
+		prefs1.mselectedbg_color == prefs2.mselectedbg_color &&
+		prefs1.mselecteddisplay_color == prefs2.mselecteddisplay_color &&
+		prefs1.mselectedinfo_color == prefs2.mselectedinfo_color &&
+		prefs1.mselectedheights_color == prefs2.mselectedheights_color &&
 		prefs1.pbg_color == prefs2.pbg_color  &&
 		prefs1.pdisplay_color == prefs2.pdisplay_color &&
-		prefs1.pselect_color == prefs2.pselect_color &&
-		prefs1.pstroke_color == prefs2.pstroke_color;
+		prefs1.pstroke_color == prefs2.pstroke_color &&
+		prefs1.pselectedbg_color == prefs2.pselectedbg_color  &&
+		prefs1.pselecteddisplay_color == prefs2.pselecteddisplay_color &&
+		prefs1.pinactiveselectedbg_color == prefs2.pinactiveselectedbg_color  &&
+		prefs1.pinactiveselecteddisplay_color == prefs2.pinactiveselecteddisplay_color;		
 }
 
 void Prefs::_CopyUserPrefs(prefs_data& prefs1, prefs_data& prefs2)
@@ -122,11 +135,19 @@ void Prefs::_CopyUserPrefs(prefs_data& prefs1, prefs_data& prefs2)
 	prefs1.minfo_color = prefs2.minfo_color;
 	prefs1.mstroke_color = prefs2.mstroke_color;
 	prefs1.mheights_color = prefs2.mheights_color;
-	prefs1.mselect_color = prefs2.mselect_color;
+	
+	prefs1.mselectedbg_color = prefs2.mselectedbg_color;
+	prefs1.mselecteddisplay_color = prefs2.mselecteddisplay_color;
+	prefs1.mselectedinfo_color = prefs2.mselectedinfo_color;
+	prefs1.mselectedheights_color = prefs2.mselectedheights_color;
+	
 	prefs1.pbg_color = prefs2.pbg_color;
 	prefs1.pdisplay_color = prefs2.pdisplay_color;
-	prefs1.pselect_color = prefs2.pselect_color;
 	prefs1.pstroke_color = prefs2.pstroke_color;
+	prefs1.pselectedbg_color = prefs2.pselectedbg_color;
+	prefs1.pselecteddisplay_color = prefs2.pselecteddisplay_color;
+	prefs1.pinactiveselectedbg_color = prefs2.pinactiveselectedbg_color;
+	prefs1.pinactiveselecteddisplay_color = prefs2.pinactiveselecteddisplay_color;
 	// Skip windows splitview settings
 }
 
@@ -170,16 +191,32 @@ void Prefs::LoadPrefs()
 		active_prefs.mstroke_color = (status == B_NO_ERROR) ? *col : def_mstroke_color;
 		status = prefs->FindData("mheightscolor", B_RGB_COLOR_TYPE, (const void **)&col, &csize);
 		active_prefs.mheights_color = (status == B_NO_ERROR) ? *col : def_mheights_color;
-		status = prefs->FindData("mselectcolor", B_RGB_COLOR_TYPE, (const void **)&col, &csize);
-		active_prefs.mselect_color = (status == B_NO_ERROR) ? *col : def_mselect_color;
+
+		status = prefs->FindData("mselectedbgcolor", B_RGB_COLOR_TYPE, (const void **)&col, &csize);
+		active_prefs.mselectedbg_color = (status == B_NO_ERROR) ? *col : def_mselectedbg_color;
+		status = prefs->FindData("mselecteddisplaycolor", B_RGB_COLOR_TYPE, (const void **)&col, &csize);
+		active_prefs.mselecteddisplay_color = (status == B_NO_ERROR) ? *col : def_mselecteddisplay_color;
+		status = prefs->FindData("mselectedinfocolor", B_RGB_COLOR_TYPE, (const void **)&col, &csize);
+		active_prefs.mselectedinfo_color = (status == B_NO_ERROR) ? *col : def_mselectedinfo_color;
+		status = prefs->FindData("mselectedheightscolor", B_RGB_COLOR_TYPE, (const void **)&col, &csize);
+		active_prefs.mselectedheights_color = (status == B_NO_ERROR) ? *col : def_mselectedheights_color;
+		
 		status = prefs->FindData("pbgcolor", B_RGB_COLOR_TYPE, (const void **)&col, &csize);
 		active_prefs.pbg_color = (status == B_NO_ERROR) ? *col : def_pbg_color;
 		status = prefs->FindData("pdisplaycolor", B_RGB_COLOR_TYPE, (const void **)&col, &csize);
 		active_prefs.pdisplay_color = (status == B_NO_ERROR) ? *col : def_pdisplay_color;
-		status = prefs->FindData("pselectcolor", B_RGB_COLOR_TYPE, (const void **)&col, &csize);
-		active_prefs.pselect_color = (status == B_NO_ERROR) ? *col : def_pselect_color;
 		status = prefs->FindData("pstrokecolor", B_RGB_COLOR_TYPE, (const void **)&col, &csize);
 		active_prefs.pstroke_color = (status == B_NO_ERROR) ? *col : def_pstroke_color;
+		
+		status = prefs->FindData("pselectedbgcolor", B_RGB_COLOR_TYPE, (const void **)&col, &csize);
+		active_prefs.pselectedbg_color = (status == B_NO_ERROR) ? *col : def_pselectedbg_color;
+		status = prefs->FindData("pselecteddisplaycolor", B_RGB_COLOR_TYPE, (const void **)&col, &csize);
+		active_prefs.pselecteddisplay_color = (status == B_NO_ERROR) ? *col : def_pselecteddisplay_color;
+		
+		status = prefs->FindData("pinactiveselectedbgcolor", B_RGB_COLOR_TYPE, (const void **)&col, &csize);
+		active_prefs.pinactiveselectedbg_color = (status == B_NO_ERROR) ? *col : def_pinactiveselectedbg_color;
+		status = prefs->FindData("pinactiveselecteddisplaycolor", B_RGB_COLOR_TYPE, (const void **)&col, &csize);
+		active_prefs.pinactiveselecteddisplay_color = (status == B_NO_ERROR) ? *col : def_pinactiveselecteddisplay_color;
 
 		if (prefs->FindRect("mainrect", &active_prefs.mainrect) != B_OK)
 			active_prefs.mainrect.Set(50, 50, 650, 485);
@@ -209,12 +246,17 @@ void Prefs::SavePrefs()
 		prefs->SetData("minfocolor", B_RGB_COLOR_TYPE, &active_prefs.minfo_color, sizeof(rgb_color));
 		prefs->SetData("mstrokecolor", B_RGB_COLOR_TYPE, &active_prefs.mstroke_color, sizeof(rgb_color));
 		prefs->SetData("mheightscolor", B_RGB_COLOR_TYPE, &active_prefs.mheights_color, sizeof(rgb_color));
-		prefs->SetData("mselectcolor", B_RGB_COLOR_TYPE, &active_prefs.mselect_color, sizeof(rgb_color));
+		prefs->SetData("mselectedbgcolor", B_RGB_COLOR_TYPE, &active_prefs.mselectedbg_color, sizeof(rgb_color));
+		prefs->SetData("mselecteddisplaycolor", B_RGB_COLOR_TYPE, &active_prefs.mselecteddisplay_color, sizeof(rgb_color));
+		prefs->SetData("mselectedinfocolor", B_RGB_COLOR_TYPE, &active_prefs.mselectedinfo_color, sizeof(rgb_color));
+		prefs->SetData("mselectedheightscolor", B_RGB_COLOR_TYPE, &active_prefs.mselectedheights_color, sizeof(rgb_color));
 		prefs->SetData("pbgcolor", B_RGB_COLOR_TYPE, &active_prefs.pbg_color, sizeof(rgb_color));
 		prefs->SetData("pdisplaycolor", B_RGB_COLOR_TYPE, &active_prefs.pdisplay_color, sizeof(rgb_color));
-		prefs->SetData("pselectcolor", B_RGB_COLOR_TYPE, &active_prefs.pselect_color, sizeof(rgb_color));
-		prefs->SetData("pstrokecolor", B_RGB_COLOR_TYPE, &active_prefs.pstroke_color, sizeof(rgb_color));
-
+		prefs->SetData("pstrokecolor", B_RGB_COLOR_TYPE, &active_prefs.pstroke_color, sizeof(rgb_color));		
+		prefs->SetData("pselectedbgcolor", B_RGB_COLOR_TYPE, &active_prefs.pselectedbg_color, sizeof(rgb_color));
+		prefs->SetData("pselecteddisplaycolor", B_RGB_COLOR_TYPE, &active_prefs.pselecteddisplay_color, sizeof(rgb_color));
+		prefs->SetData("pinactiveselectedbgcolor", B_RGB_COLOR_TYPE, &active_prefs.pinactiveselectedbg_color, sizeof(rgb_color));
+		prefs->SetData("pinactiveselecteddisplaycolor", B_RGB_COLOR_TYPE, &active_prefs.pinactiveselecteddisplay_color, sizeof(rgb_color));
 		prefs->SetRect("mainrect", active_prefs.mainrect);
 		prefs->SetRect("propsrect", active_prefs.propsrect);
 		prefs->SetRect("prefsrect", active_prefs.prefsrect);
@@ -301,14 +343,9 @@ void Prefs::SetDisplayText(const char *text)
 	active_prefs.displaytext = text;
 }
 
-rgb_color Prefs::GetMBgColor()
+rgb_color Prefs::GetMBgColor(bool selected = false)
 {
-	return active_prefs.mbg_color;
-}
-
-rgb_color Prefs::GetMBgDefault()
-{
-	return def_mbg_color;
+	return selected ? active_prefs.mselectedbg_color : active_prefs.mbg_color;
 }
 
 void Prefs::SetMBgColor(rgb_color *col)
@@ -316,14 +353,14 @@ void Prefs::SetMBgColor(rgb_color *col)
 	active_prefs.mbg_color = *col;
 }
 
-rgb_color Prefs::GetMDisplayColor()
+void Prefs::SetMSelectedBgColor(rgb_color *col)
 {
-	return active_prefs.mdisplay_color;
+	active_prefs.mselectedbg_color = *col;
 }
 
-rgb_color Prefs::GetMDisplayDefault()
+rgb_color Prefs::GetMDisplayColor(bool selected = false)
 {
-	return def_mdisplay_color;
+	return selected ? active_prefs.mselecteddisplay_color : active_prefs.mdisplay_color;
 }
 
 void Prefs::SetMDisplayColor(rgb_color *col)
@@ -331,14 +368,14 @@ void Prefs::SetMDisplayColor(rgb_color *col)
 	active_prefs.mdisplay_color = *col;
 }
 
-rgb_color Prefs::GetMInfoColor()
+void Prefs::SetMSelectedDisplayColor(rgb_color *col)
 {
-	return active_prefs.minfo_color;
+	active_prefs.mselecteddisplay_color = *col;
 }
 
-rgb_color Prefs::GetMInfoDefault()
+rgb_color Prefs::GetMInfoColor(bool selected = false)
 {
-	return def_minfo_color;
+	return selected ? active_prefs.mselectedinfo_color : active_prefs.minfo_color;
 }
 
 void Prefs::SetMInfoColor(rgb_color *col)
@@ -346,14 +383,14 @@ void Prefs::SetMInfoColor(rgb_color *col)
 	active_prefs.minfo_color = *col;
 }
 
+void Prefs::SetMSelectedInfoColor(rgb_color *col)
+{
+	active_prefs.mselectedinfo_color = *col;
+}
+
 rgb_color Prefs::GetMStrokeColor()
 {
 	return active_prefs.mstroke_color;
-}
-
-rgb_color Prefs::GetMStrokeDefault()
-{
-	return def_mstroke_color;
 }
 
 void Prefs::SetMStrokeColor(rgb_color *col)
@@ -361,14 +398,9 @@ void Prefs::SetMStrokeColor(rgb_color *col)
 	active_prefs.mstroke_color = *col;
 }
 
-rgb_color Prefs::GetMHeightsColor()
+rgb_color Prefs::GetMHeightsColor(bool selected = false)
 {
-	return active_prefs.mheights_color;
-}
-
-rgb_color Prefs::GetMHeightsDefault()
-{
-	return def_mheights_color;
+	return selected ? active_prefs.mselectedheights_color : active_prefs.mheights_color;
 }
 
 void Prefs::SetMHeightsColor(rgb_color *col)
@@ -376,29 +408,34 @@ void Prefs::SetMHeightsColor(rgb_color *col)
 	active_prefs.mheights_color = *col;
 }
 
-rgb_color Prefs::GetMSelectColor()
+void Prefs::SetMSelectedHeightsColor(rgb_color *col)
 {
-	return active_prefs.mselect_color;
+	active_prefs.mselectedheights_color = *col;
 }
 
-rgb_color Prefs::GetMSelectDefault()
+rgb_color Prefs::GetPBgColor(bool selected = false)
 {
-	return def_mselect_color;
+	return selected ? active_prefs.pselectedbg_color : active_prefs.pbg_color;
 }
 
-void Prefs::SetMSelectColor(rgb_color *col)
+rgb_color Prefs::GetPInactiveSelectedBgColor()
 {
-	active_prefs.mselect_color = *col;
+	return active_prefs.pinactiveselectedbg_color;
 }
 
-rgb_color Prefs::GetPBgColor()
+void Prefs::SetPInactiveSelectedBgColor(rgb_color *col)
 {
-	return active_prefs.pbg_color;
+	active_prefs.pinactiveselectedbg_color = *col;
 }
 
-rgb_color Prefs::GetPBgDefault()
+rgb_color Prefs::GetPInactiveSelectedDisplayColor()
 {
-	return def_pbg_color;
+	return active_prefs.pinactiveselecteddisplay_color;
+}
+
+void Prefs::SetPInactiveSelectedDisplayColor(rgb_color *col)
+{
+	active_prefs.pinactiveselecteddisplay_color = *col;
 }
 
 void Prefs::SetPBgColor(rgb_color *col)
@@ -406,14 +443,14 @@ void Prefs::SetPBgColor(rgb_color *col)
 	active_prefs.pbg_color = *col;
 }
 
-rgb_color Prefs::GetPDisplayColor()
+void Prefs::SetPSelectedBgColor(rgb_color *col)
 {
-	return active_prefs.pdisplay_color;
+	active_prefs.pselectedbg_color = *col;
 }
 
-rgb_color Prefs::GetPDisplayDefault()
+rgb_color Prefs::GetPDisplayColor(bool selected = false)
 {
-	return def_pdisplay_color;
+	return selected ? active_prefs.pselecteddisplay_color : active_prefs.pdisplay_color;
 }
 
 void Prefs::SetPDisplayColor(rgb_color *col)
@@ -421,29 +458,14 @@ void Prefs::SetPDisplayColor(rgb_color *col)
 	active_prefs.pdisplay_color = *col;
 }
 
-rgb_color Prefs::GetPSelectColor()
+void Prefs::SetPSelectedDisplayColor(rgb_color *col)
 {
-	return active_prefs.pselect_color;
-}
-
-rgb_color Prefs::GetPSelectDefault()
-{
-	return def_pselect_color;
-}
-
-void Prefs::SetPSelectColor(rgb_color *col)
-{
-	active_prefs.pselect_color = *col;
+	active_prefs.pselecteddisplay_color = *col;
 }
 
 rgb_color Prefs::GetPStrokeColor()
 {
 	return active_prefs.pstroke_color;
-}
-
-rgb_color Prefs::GetPStrokeDefault()
-{
-	return def_pstroke_color;
 }
 
 void Prefs::SetPStrokeColor(rgb_color *col)

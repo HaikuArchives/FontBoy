@@ -54,7 +54,7 @@ void ListView::DrawContentBox(int32 element)
 	
 		// Fill boxes at end of list with background color
 		if (fontptr == NULL) {
-			SetHighColor(def_viewcolor);
+			SetHighColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 			// adjust rectsize for borders
 			rect.left++;
 			rect.top++;
@@ -62,14 +62,8 @@ void ListView::DrawContentBox(int32 element)
 		}
 		// Draw Fontbox
 		else {
-			if (fontptr->selected) {
-				SetHighColor(prefs->GetMSelectColor());
-				SetLowColor(prefs->GetMSelectColor());
-			}
-			else {
-				SetHighColor(prefs->GetMBgColor());
-				SetLowColor(prefs->GetMBgColor());
-			}
+			SetHighColor(prefs->GetMBgColor(fontptr->selected));
+			SetLowColor(prefs->GetMBgColor(fontptr->selected));
 			x = rect.left;
 			y = rect.top;
 			FillRect(rect);
@@ -78,7 +72,7 @@ void ListView::DrawContentBox(int32 element)
 		
 			// Stroke line for base + ascent & decent height
 			if (prefs->GetDrawHeights()) {
-				SetHighColor(prefs->GetMHeightsColor());
+				SetHighColor(prefs->GetMHeightsColor(fontptr->selected));
 				point.Set(x, y + dist);
 				point2.Set(x + cwidth, y + dist);
 				StrokeLine(point, point2);
@@ -107,14 +101,14 @@ void ListView::DrawContentBox(int32 element)
 			SetFont(&font);
 		
 			// copy and maybe truncate text to display
-			SetHighColor(prefs->GetMDisplayColor());
+			SetHighColor(prefs->GetMDisplayColor(fontptr->selected));
 			strcpy(atext, (const char *)prefs->GetDisplayText().String());
 			*textinput = *textoutput = atext;
 			font.GetTruncatedStrings(textinput, 1, B_TRUNCATE_END, cwidth - leftdist, textoutput);
 			DrawString(atext, point);
 		
 			// prepare font and text for fontinformation
-			SetHighColor(prefs->GetMInfoColor());
+			SetHighColor(prefs->GetMInfoColor(fontptr->selected));
 			point.Set(x + leftdist, y + dist + ih_base);
 			SetFont(&infofont);
 			sprintf(atext, "%s %s", fontptr->family, fontptr->style);
@@ -220,6 +214,24 @@ void ListView::MouseDown(BPoint point)
 				dragtext += fontptr->family;
 				dragtext += "\"></FONT>\0";
 				dragmsg.AddData("text/html", B_MIME_TYPE, dragtext.String(), dragtext.Length());
+				
+				// add text_run_array
+				
+				const int entryCount = 2;
+				int32 size = sizeof(text_run_array) + (entryCount - 1) * sizeof(text_run);
+
+				text_run_array* runArray = (text_run_array*)calloc(size, 1);
+				if (runArray != NULL) {
+					runArray->count = 1;
+					const rgb_color black = {0, 0, 0, 255};
+					//font.SetSize(14);
+					new (&runArray->runs[0].font) BFont(font);
+					runArray->runs[0].color = black; 
+					new (&runArray->runs[1].font) BFont;
+					dragmsg.AddData("application/x-vnd.Be-text_run_array",
+						B_MIME_TYPE, runArray, size);
+					free(runArray);
+				}
 
 				// calc rectangle for fontname
 				BFont font(be_plain_font);
@@ -241,7 +253,7 @@ void ListView::MouseDown(BPoint point)
 				if (dbmp && dview) {
 					dbmp->Lock();
 					dbmp->AddChild(dview);
-					rgb_color c = prefs->GetMSelectColor();
+					rgb_color c = prefs->GetMBgColor(true);
 					c.alpha = 196;
 					dview->SetLowColor(c);
 					dview->SetHighColor(c);

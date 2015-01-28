@@ -114,7 +114,7 @@ public:
 
 	enum
 	{
-		PADDING = 5,
+		PADDING = 6,
 		HEIGHT = 32 + PADDING
 	};
 

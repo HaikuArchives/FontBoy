@@ -44,7 +44,10 @@ public:
 			int32	GetPageEndPos();
 			void	SetBGColor(rgb_color col);
 			void	SetTextColor(rgb_color col);
-			void	SetSelectColor(rgb_color col);
+			void	SetSelectedBGColor(rgb_color col);
+			void	SetSelectedTextColor(rgb_color col);
+			void	SetInactiveSelectedBGColor(rgb_color col);
+			void	SetInactiveSelectedTextColor(rgb_color col);
 			void	SetStrokeColor(rgb_color col);
 			void	SetPadding(int);
 			void	SetDrawMode(bool);
@@ -59,7 +62,8 @@ private:
 	font_family	family;
 	font_style	style;
 	float		colwidth, rowheight;
-	rgb_color	bgColor, textColor, selectColor, strokeColor;
+	rgb_color	bgColor, textColor, selectedBgColor, selectedTextColor,
+				inactiveSelectedBgColor, inactiveSelectedTextColor, strokeColor;
 	font_height	fheight;
 	uint16		charpos;
 	int			pad;

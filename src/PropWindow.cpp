@@ -157,7 +157,7 @@ void PropView::AttachedToWindow(void)
 
 	PropWindow	*propwin = dynamic_cast<PropWindow*>(Window());
 
-	SetViewColor(def_viewcolor);
+	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
 	rect = Bounds();
 	rect.bottom = rect.top + TopView::HEIGHT;
@@ -180,7 +180,10 @@ void PropView::AttachedToWindow(void)
 	csview = new CharSetView(rect, family, style, new BMessage(M_NEWCHAR));
 	csview->SetBGColor(prefs->GetPBgColor());
 	csview->SetTextColor(prefs->GetPDisplayColor());
-	csview->SetSelectColor(prefs->GetPSelectColor());
+	csview->SetSelectedBGColor(prefs->GetPBgColor(true));
+	csview->SetSelectedTextColor(prefs->GetPDisplayColor(true));
+	csview->SetInactiveSelectedBGColor(prefs->GetPInactiveSelectedBgColor());
+	csview->SetInactiveSelectedTextColor(prefs->GetPInactiveSelectedDisplayColor());
 	csview->SetStrokeColor(prefs->GetPStrokeColor());
 	csview->SetPadding(5);
 
@@ -306,7 +309,10 @@ void PropView::Update()
 		csview->SetFamilyAndStyle(family, style);
 		csview->SetBGColor(prefs->GetPBgColor());
 		csview->SetTextColor(prefs->GetPDisplayColor());
-		csview->SetSelectColor(prefs->GetPSelectColor());
+		csview->SetSelectedBGColor(prefs->GetPBgColor(true));
+		csview->SetSelectedTextColor(prefs->GetPDisplayColor(true));
+		csview->SetInactiveSelectedBGColor(prefs->GetPInactiveSelectedBgColor());
+		csview->SetInactiveSelectedTextColor(prefs->GetPInactiveSelectedDisplayColor());
 		csview->SetStrokeColor(prefs->GetPStrokeColor());
 		csview->Invalidate();
 		Window()->Unlock();
@@ -539,7 +545,7 @@ void LeftView::Draw(BRect urect)
 //	Fill dark grey area
 	rect = l_rect;
 	rect.right = rect.left + PropView::DARKGREY_DECOR_WIDTH;
-	SetHighColor(def_pviewcolor);
+	SetHighColor(tint_color(ui_color(B_PANEL_BACKGROUND_COLOR), B_DARKEN_1_TINT));
 	FillRect(rect);
 
 //	add Fontinfo below CharView
@@ -555,7 +561,7 @@ void LeftView::Draw(BRect urect)
 	r_rect.left = PropView::DARKGREY_DECOR_WIDTH + 5;
 
 	SetHighColor(0, 0, 0);
-	SetLowColor(def_pviewcolor);
+	SetLowColor(tint_color(ui_color(B_PANEL_BACKGROUND_COLOR), B_DARKEN_1_TINT));
 	DrawTruncString(l_rect, "Family:");
 
 	l_rect.OffsetBy(0, FONTINFO_LINE_HEIGHT);
@@ -822,7 +828,7 @@ void TopView::Draw(BRect urect)
 
 	urect = Bounds();
 	urect.right = urect.left + PropView::DARKGREY_DECOR_WIDTH;
-	SetHighColor(def_pviewcolor);
+	SetHighColor(tint_color(ui_color(B_PANEL_BACKGROUND_COLOR), B_DARKEN_1_TINT));
 	FillRect(urect);
 
 	// select TrueType or Postscript icon

@@ -40,24 +40,37 @@ PrefsWindow::PrefsWindow(BRect rect)
 	fAttrList->AddItem(cmbg);
 	cmdisplay = new ColorItem("List text", LIST_WINDOW_COLOR, col);
 	fAttrList->AddItem(cmdisplay);
-	cmselect = new ColorItem("List selection", LIST_WINDOW_COLOR, col);
-	fAttrList->AddItem(cmselect);
-	cmstroke = new ColorItem("List borders", LIST_WINDOW_COLOR, col);
-	fAttrList->AddItem(cmstroke);
+	cminfo = new ColorItem("List info text", LIST_WINDOW_COLOR, col);
+	fAttrList->AddItem(cminfo);
 	cmheights = new ColorItem("List height lines", LIST_WINDOW_COLOR, col);
 	fAttrList->AddItem(cmheights);
-	cminfo = new ColorItem("List info text", LIST_WINDOW_COLOR, col);
-	fAttrList->AddItem(cminfo);	
+	cmstroke = new ColorItem("List borders", LIST_WINDOW_COLOR, col);
+	fAttrList->AddItem(cmstroke);
+	cmselectedbg = new ColorItem("Selected list background", LIST_WINDOW_COLOR, col);
+	fAttrList->AddItem(cmselectedbg);
+	cmselecteddisplay = new ColorItem("Selected list text", LIST_WINDOW_COLOR, col);
+	fAttrList->AddItem(cmselecteddisplay);
+	cmselectedinfo = new ColorItem("Selected list info text", LIST_WINDOW_COLOR, col);
+	fAttrList->AddItem(cmselectedinfo);	
+	cmselectedheights = new ColorItem("Selected list height lines", LIST_WINDOW_COLOR, col);
+	fAttrList->AddItem(cmselectedheights);
+
 	
 	cpbg = new ColorItem("Details background", DETAILS_WINDOW_COLOR, col);
 	fAttrList->AddItem(cpbg);
 	cpdisplay = new ColorItem("Details text", DETAILS_WINDOW_COLOR, col);
 	fAttrList->AddItem(cpdisplay);
-	cpselect = new ColorItem("Details selection", DETAILS_WINDOW_COLOR, col);
-	fAttrList->AddItem(cpselect);
 	cpstroke = new ColorItem("Details borders", DETAILS_WINDOW_COLOR, col);
 	fAttrList->AddItem(cpstroke);
-
+	cpselectedbg = new ColorItem("Selected details background", DETAILS_WINDOW_COLOR, col);
+	fAttrList->AddItem(cpselectedbg);
+	cpselecteddisplay = new ColorItem("Selected details text", DETAILS_WINDOW_COLOR, col);
+	fAttrList->AddItem(cpselecteddisplay);
+	cpinactiveselectedbg = new ColorItem("Inactive selected details background", DETAILS_WINDOW_COLOR, col);
+	fAttrList->AddItem(cpinactiveselectedbg);
+	cpinactiveselecteddisplay = new ColorItem("Inactive Selected details text", DETAILS_WINDOW_COLOR, col);
+	fAttrList->AddItem(cpinactiveselecteddisplay);
+	
 	BRect wellrect(0, 0, 50, 50);
 	fColorPreview = new ColorPreview(wellrect, new BMessage(M_COLOR_DROPPED), 0);
 
@@ -123,14 +136,17 @@ PrefsWindow::PrefsWindow(BRect rect)
 	text->SetModificationMessage(new BMessage(M_VIEWTEXTMOD));
 	text->SetDivider(font.StringWidth("Example text:") + 12.0);
 	text->SetLabel("Example text:");
-	text->SetViewColor(def_viewcolor);
+	text->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	text->SetToolTip("Change example text");
-
-	drawborder = new BCheckBox(rect, "", "Draw border",  new BMessage(M_DRAWBORDER));
+	// ListView uses 128 bytes array. Avoid overflow...
+	text->TextView()->SetMaxBytes(128);
+	
+	
+	drawborder = new BCheckBox(rect, "", "Draw borders",  new BMessage(M_DRAWBORDER));
 	drawborder->SetToolTip("Draw borders for each font");
 	
 	drawheights = new BCheckBox(rect, "", "Draw heights",  new BMessage(M_DRAWHEIGHTS));
-	drawheights->SetToolTip("Show lines for fontheights");
+	drawheights->SetToolTip("Show lines for font heights");
 	
 	displayView->SetLayout(new BGroupLayout(B_VERTICAL));
 	
@@ -154,9 +170,9 @@ PrefsWindow::PrefsWindow(BRect rect)
 	fRevertButton->SetToolTip("Revert to last saved settings");
 	fRevertButton->SetEnabled(false);
 
-	fDefaultButton = new BButton(rect, "", "Default", new BMessage(M_DEFAULT));
-	fDefaultButton->SetToolTip("Restore default settings");
-	fDefaultButton->SetEnabled(!prefs->IsDefault());
+	fDefaultsButton = new BButton(rect, "", "Defaults", new BMessage(M_DEFAULT));
+	fDefaultsButton->SetToolTip("Restore defaults settings");
+	fDefaultsButton->SetEnabled(!prefs->IsDefault());
 
 	
 	SetLayout(new BGroupLayout(B_VERTICAL));
@@ -164,7 +180,7 @@ PrefsWindow::PrefsWindow(BRect rect)
 	AddChild(BLayoutBuilder::Group<>(B_VERTICAL)
 		.Add(fTabView)
 		.AddGroup(B_HORIZONTAL)
-			.Add(fDefaultButton)
+			.Add(fDefaultsButton)
 			.Add(fRevertButton)
 			.AddGlue()
 		.End()
@@ -206,11 +222,18 @@ void PrefsWindow::GetPreferences()
 	cminfo->SetColor(prefs->GetMInfoColor());
 	cmstroke->SetColor(prefs->GetMStrokeColor());
 	cmheights->SetColor(prefs->GetMHeightsColor());
-	cmselect->SetColor(prefs->GetMSelectColor());
+	cmselectedbg->SetColor(prefs->GetMBgColor(true));
+	cmselecteddisplay->SetColor(prefs->GetMDisplayColor(true));
+	cmselectedinfo->SetColor(prefs->GetMInfoColor(true));
+	cmselectedheights->SetColor(prefs->GetMHeightsColor(true));
 	cpbg->SetColor(prefs->GetPBgColor());
-	cpdisplay->SetColor(prefs->GetPDisplayColor());
-	cpselect->SetColor(prefs->GetPSelectColor());
+	cpdisplay->SetColor(prefs->GetPDisplayColor());	
 	cpstroke->SetColor(prefs->GetPStrokeColor());
+	cpselectedbg->SetColor(prefs->GetPBgColor(true));
+	cpselecteddisplay->SetColor(prefs->GetPDisplayColor(true));
+	cpinactiveselectedbg->SetColor(prefs->GetPInactiveSelectedBgColor());
+	cpinactiveselecteddisplay->SetColor(prefs->GetPInactiveSelectedDisplayColor());
+
 }
 
 void PrefsWindow::SetPreferences()
@@ -237,16 +260,28 @@ void PrefsWindow::SetPreferences()
 	prefs->SetMStrokeColor(&col);
 	col = cmheights->Color();
 	prefs->SetMHeightsColor(&col);
-	col = cmselect->Color();
-	prefs->SetMSelectColor(&col);
+	col = cmselectedbg->Color();
+	prefs->SetMSelectedBgColor(&col);
+	col = cmselecteddisplay->Color();
+	prefs->SetMSelectedDisplayColor(&col);
+	col = cmselectedinfo->Color();
+	prefs->SetMSelectedInfoColor(&col);
+	col = cmselectedheights->Color();
+	prefs->SetMSelectedHeightsColor(&col);
 	col = cpbg->Color();
 	prefs->SetPBgColor(&col);
 	col = cpdisplay->Color();
 	prefs->SetPDisplayColor(&col);
-	col = cpselect->Color();
-	prefs->SetPSelectColor(&col);
 	col = cpstroke->Color();
 	prefs->SetPStrokeColor(&col);
+	col = cpselectedbg->Color();
+	prefs->SetPSelectedBgColor(&col);
+	col = cpselecteddisplay->Color();
+	prefs->SetPSelectedDisplayColor(&col);
+	col = cpinactiveselectedbg->Color();
+	prefs->SetPInactiveSelectedBgColor(&col);
+	col = cpinactiveselecteddisplay->Color();
+	prefs->SetPInactiveSelectedDisplayColor(&col);
 }
 
 void PrefsWindow::UpdatePrefs()
@@ -255,7 +290,7 @@ void PrefsWindow::UpdatePrefs()
 	be_app->PostMessage(M_APPLYSETTINGS);
 
 	fRevertButton->SetEnabled(prefs->CanRevert());
-	fDefaultButton->SetEnabled(!prefs->IsDefault());
+	fDefaultsButton->SetEnabled(!prefs->IsDefault());
 }
 
 void PrefsWindow::MessageReceived(BMessage* msg)
