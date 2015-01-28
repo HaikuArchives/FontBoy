@@ -53,6 +53,7 @@ void AboutView::Draw(BRect urect)
 
 	SetLowColor(255, 255, 255, 255);
 	SetHighColor(0, 0, 0, 255);
+	SetDrawingMode(B_OP_COPY);
 
 /*  mBitmap = BTranslationUtils::GetBitmapFile(path.Path());
   if (mBitmap == NULL)
@@ -72,6 +73,7 @@ void AboutView::Draw(BRect urect)
 	BFont font(be_bold_font); 
 	font.SetSize(35.0); 
 	SetFont(&font);
+	SetDrawingMode(B_OP_ALPHA);
 	float left = font.StringWidth("F  O  N  T  B  O  Y");
 	left = (Bounds().Width() - left) / 2;
 	BPoint point(left, 50.0);
