@@ -57,7 +57,9 @@ void ListView::DrawContentBox(int32 element)
 			SetHighColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 			// adjust rectsize for borders
 			rect.left++;
-			rect.top++;
+			// top rect doesn't need borders offset
+			if (rect.top != 0)
+				rect.top++;
 			FillRect(rect);
 		}
 		// Draw Fontbox
