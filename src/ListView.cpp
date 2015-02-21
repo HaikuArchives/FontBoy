@@ -186,7 +186,10 @@ void ListView::MouseDown(BPoint point)
 			ConvertToScreen(&point);
 			item = popup->Go(point);
 			if (item) {
-				be_app->PostMessage(item->Message()->what);
+				if (item->Message()->what == M_DETAILS)
+					be_app->PostMessage(item->Message()->what);
+				else
+					Window()->PostMessage(item->Message()->what);
 			}
 			return;
 		}
