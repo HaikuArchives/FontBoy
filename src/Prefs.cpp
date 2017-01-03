@@ -223,7 +223,7 @@ void Prefs::LoadPrefs()
 		if (prefs->FindRect("propsrect", &active_prefs.propsrect) != B_OK)
 			active_prefs.propsrect.Set(50, 50, 450, 450);
 		if (prefs->FindRect("prefsrect", &active_prefs.prefsrect) != B_OK)
-			active_prefs.prefsrect.Set(50, 50, 480, 374);
+			active_prefs.prefsrect.Set(50, 50, 600, 374);
 
 		if (prefs->FindInt32("splitpanepos", &active_prefs.splitpanepos) != B_OK)
 			active_prefs.splitpanepos = 200;
