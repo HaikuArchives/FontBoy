@@ -103,9 +103,9 @@ PrefsWindow::PrefsWindow(BRect rect)
 	 ********************************/
 	 
 	BView* displayView = new BView("Display", 0);
-	BRect rect(0,0,0,0);
+	BRect zeroRect(0,0,0,0);
 	
-	slider = new StatusSlider(rect, "FontSize", "Font size:", new BMessage(M_FONTSIZE), 6, 360, B_TRIANGLE_THUMB);
+	slider = new StatusSlider(zeroRect, "FontSize", "Font size:", new BMessage(M_FONTSIZE), 6, 360, B_TRIANGLE_THUMB);
 	slider->UseFillColor(true, &sfillcolor);
 	slider->SetUpdateText("%upt");
 	slider->SetHashMarks(B_HASH_MARKS_BOTH);
@@ -127,12 +127,12 @@ PrefsWindow::PrefsWindow(BRect rect)
 
 		numcols->AddItem(item = new BMenuItem(atext, new BMessage(M_NUMCOLS)));
 	}
-	aafield = new BMenuField(rect, "", "Columns:", numcols);
+	aafield = new BMenuField(zeroRect, "", "Columns:", numcols);
 	aafield->SetFont(&font);
 	aafield->SetDivider(font.StringWidth("Example text:") + 12.0);
 	aafield->SetToolTip("Change number of columns");
 	
-	text = new BTextControl(rect, "", NULL, "Example text", new BMessage(M_VIEWTEXTINV));
+	text = new BTextControl(zeroRect, "", NULL, "Example text", new BMessage(M_VIEWTEXTINV));
 	text->SetModificationMessage(new BMessage(M_VIEWTEXTMOD));
 	text->SetDivider(font.StringWidth("Example text:") + 12.0);
 	text->SetLabel("Example text:");
@@ -142,10 +142,10 @@ PrefsWindow::PrefsWindow(BRect rect)
 	text->TextView()->SetMaxBytes(128);
 	
 	
-	drawborder = new BCheckBox(rect, "", "Draw borders",  new BMessage(M_DRAWBORDER));
+	drawborder = new BCheckBox(zeroRect, "", "Draw borders",  new BMessage(M_DRAWBORDER));
 	drawborder->SetToolTip("Draw borders for each font");
 	
-	drawheights = new BCheckBox(rect, "", "Draw heights",  new BMessage(M_DRAWHEIGHTS));
+	drawheights = new BCheckBox(zeroRect, "", "Draw heights",  new BMessage(M_DRAWHEIGHTS));
 	drawheights->SetToolTip("Show lines for font heights");
 	
 	displayView->SetLayout(new BGroupLayout(B_VERTICAL));
@@ -166,11 +166,11 @@ PrefsWindow::PrefsWindow(BRect rect)
 
 	GetPreferences();
 	
-	fRevertButton = new BButton(rect, "", "Revert", new BMessage(M_REVERT));
+	fRevertButton = new BButton(zeroRect, "", "Revert", new BMessage(M_REVERT));
 	fRevertButton->SetToolTip("Revert to last saved settings");
 	fRevertButton->SetEnabled(false);
 
-	fDefaultsButton = new BButton(rect, "", "Defaults", new BMessage(M_DEFAULT));
+	fDefaultsButton = new BButton(zeroRect, "", "Defaults", new BMessage(M_DEFAULT));
 	fDefaultsButton->SetToolTip("Restore defaults settings");
 	fDefaultsButton->SetEnabled(!prefs->IsDefault());
 

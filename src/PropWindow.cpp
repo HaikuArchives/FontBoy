@@ -121,8 +121,8 @@ bool PropWindow::IsSplitpaneLocked()
 
 void PropWindow::GetFamilyAndStyle(font_family *fam, font_style *st)
 {
-	*fam = family;
-	*st = style;
+	strcpy(*fam, this->family);
+	strcpy(*st, this->style);
 }
 
 void PropWindow::SetFamilyAndStyle(const font_family family, const font_style style)
@@ -364,12 +364,12 @@ void SplitView::UpdatePos(float width, float height, int i)
 	UpdateLimits(width, height);
 }
 
-void SplitView::UpdateLimits(float movement = 0)
+void SplitView::UpdateLimits(float movement)
 {
 	UpdateLimits(Bounds().Width(), Bounds().Height(), movement);
 }
 
-void SplitView::UpdateLimits(float width, float height, float movement = 0)
+void SplitView::UpdateLimits(float width, float height, float movement)
 {
 	// prevents <--> control to be moved out of bounds
 	int fontinfo_height = int(LeftView::FONTINFO_PADDING + (LeftView::FONTINFO_LINE_HEIGHT*4));
