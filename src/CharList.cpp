@@ -39,7 +39,7 @@ void CharList::Empty()
 	while(i >= 0) {
 		item = RemoveItem(i);
 		if(item)
-			delete item;
+			delete (struct cnode *)item;
 		i--;
 	}
 }

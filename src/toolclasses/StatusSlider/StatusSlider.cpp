@@ -7,9 +7,9 @@ StatusSlider::StatusSlider(BRect frame,
 							BMessage *msg,
 							int32 minValue,
 							int32 maxValue,
-							thumb_style thumbType = B_BLOCK_THUMB,
-							uint32 resizingMode = B_FOLLOW_LEFT | B_FOLLOW_TOP,
-							uint32 flags = B_FRAME_EVENTS | B_WILL_DRAW | B_NAVIGABLE)
+							thumb_style thumbType,
+							uint32 resizingMode,
+							uint32 flags)
 :BSlider(frame, name, label, msg, minValue, maxValue, thumbType, resizingMode, flags)
 {
 	tmpUpdTxt = new char[32];

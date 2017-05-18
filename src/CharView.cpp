@@ -1,5 +1,6 @@
 #include "CharView.h"
 #include <Debug.h>
+#include <string.h>
 
 CharView::CharView(BRect frame, font_family fam, font_style sty)
 :BView(frame, "CharSetView", B_FOLLOW_LEFT_RIGHT | B_FOLLOW_TOP, B_WILL_DRAW | B_FRAME_EVENTS),

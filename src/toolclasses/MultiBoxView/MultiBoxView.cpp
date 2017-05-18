@@ -2,7 +2,7 @@
 
 #include "MultiBoxView.h"
 
-MultiBoxView::MultiBoxView(BRect frame, float ncols = 3, float rheight = 30)
+MultiBoxView::MultiBoxView(BRect frame, float ncols, float rheight)
 		 :BView(frame, "MultiBoxView",  B_FOLLOW_ALL_SIDES, B_WILL_DRAW | B_FRAME_EVENTS)
 {
 	numcols = ncols;

@@ -343,7 +343,7 @@ void Prefs::SetDisplayText(const char *text)
 	active_prefs.displaytext = text;
 }
 
-rgb_color Prefs::GetMBgColor(bool selected = false)
+rgb_color Prefs::GetMBgColor(bool selected)
 {
 	return selected ? active_prefs.mselectedbg_color : active_prefs.mbg_color;
 }
@@ -358,7 +358,7 @@ void Prefs::SetMSelectedBgColor(rgb_color *col)
 	active_prefs.mselectedbg_color = *col;
 }
 
-rgb_color Prefs::GetMDisplayColor(bool selected = false)
+rgb_color Prefs::GetMDisplayColor(bool selected)
 {
 	return selected ? active_prefs.mselecteddisplay_color : active_prefs.mdisplay_color;
 }
@@ -373,7 +373,7 @@ void Prefs::SetMSelectedDisplayColor(rgb_color *col)
 	active_prefs.mselecteddisplay_color = *col;
 }
 
-rgb_color Prefs::GetMInfoColor(bool selected = false)
+rgb_color Prefs::GetMInfoColor(bool selected)
 {
 	return selected ? active_prefs.mselectedinfo_color : active_prefs.minfo_color;
 }
@@ -398,7 +398,7 @@ void Prefs::SetMStrokeColor(rgb_color *col)
 	active_prefs.mstroke_color = *col;
 }
 
-rgb_color Prefs::GetMHeightsColor(bool selected = false)
+rgb_color Prefs::GetMHeightsColor(bool selected)
 {
 	return selected ? active_prefs.mselectedheights_color : active_prefs.mheights_color;
 }
@@ -413,7 +413,7 @@ void Prefs::SetMSelectedHeightsColor(rgb_color *col)
 	active_prefs.mselectedheights_color = *col;
 }
 
-rgb_color Prefs::GetPBgColor(bool selected = false)
+rgb_color Prefs::GetPBgColor(bool selected)
 {
 	return selected ? active_prefs.pselectedbg_color : active_prefs.pbg_color;
 }
@@ -448,7 +448,7 @@ void Prefs::SetPSelectedBgColor(rgb_color *col)
 	active_prefs.pselectedbg_color = *col;
 }
 
-rgb_color Prefs::GetPDisplayColor(bool selected = false)
+rgb_color Prefs::GetPDisplayColor(bool selected)
 {
 	return selected ? active_prefs.pselecteddisplay_color : active_prefs.pdisplay_color;
 }
