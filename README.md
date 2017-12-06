@@ -1,14 +1,13 @@
-![FontBoy screenshot](FontBoy.png "FontBoy")
-
 Fontboy
 =======
-Version 0.9.7
 
 © 1999-2003 Oliver 'Madison' Kohl
 
 Introduction
 ============
 Fontboy is a small application to show your installed fonts in Haiku. You can get additional information of the selected font and a preview of the complete Unicode charset. Fontboy allows you to adjust the appearence to your desired needs and it's fast because Haiku is.
+
+![FontBoy screenshot](FontBoy.png "FontBoy")
 
 
 Features
