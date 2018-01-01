@@ -45,15 +45,16 @@ ListWindow::ListWindow(BRect rect)
 
 	AddChild(menu_bar);
 
+	float mbHeight = menu_bar->Bounds().bottom;
 	BRect fontframe = Bounds();
-	fontframe.top = menu_bar->Bounds().bottom + 1.0;
+	fontframe.top = mbHeight + 1.0;
 	fontframe.right -= B_V_SCROLL_BAR_WIDTH;
 	fontframe.bottom -= B_H_SCROLL_BAR_HEIGHT;
 	fontview = new ListView(fontframe);
 	AddChild(new BScrollView(B_EMPTY_STRING, fontview, B_FOLLOW_ALL_SIDES, B_WILL_DRAW, true, true));
 
 	fontview->Init();
-
+	ResizeTo(Bounds().Width(), mbHeight + fontview->Height());
 }
 
 ListWindow::~ListWindow()

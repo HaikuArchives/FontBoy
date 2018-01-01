@@ -32,6 +32,7 @@ class ListView : public MultiBoxView {
 				void	SetElements(int32 elements);
 				void	SetFrame(BRect frame);
 				void	UpdateScrollBar();
+				float	Height() { return fHeight; }
 
 	protected:
 		virtual void	MouseDown(BPoint point);
@@ -51,6 +52,7 @@ class ListView : public MultiBoxView {
 		float			th_all, th_base, ih_base;
 		BPoint			lastPoint;
 
+		float			fHeight;
 };
 
 #endif	// LISTVIEW_H
