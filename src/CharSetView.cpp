@@ -1,5 +1,8 @@
 
 #include "CharSetView.h"
+
+#include <UnicodeChar.h>
+
 #include "MsgVals.h"
 #include "ConstColors.h"
 #include "Debug.h"
@@ -266,8 +269,6 @@ void CharSetView::MouseDown(BPoint point)
 
 void CharSetView::KeyDown(const char *bytes, int32 numBytes)
 {
-	uint16		uniChar[1];
-
 	if (numBytes == 1) {
 		switch (bytes[0]) {
 			case B_LEFT_ARROW:
@@ -309,21 +310,21 @@ void CharSetView::KeyDown(const char *bytes, int32 numBytes)
 				break;
 
 			default: {
-				//  Unicode to UTF8 Character encoding
-				uniChar[0] = 0;
-				int32 state = 0;
-				int32 destLen = sizeof(uniChar);
-				convert_from_utf8(B_UNICODE_CONVERSION, (const char*)bytes, &numBytes,
-						(char*)uniChar, &destLen, &state);
+				// 1-byte UTF-8 encoding, code point range: 0 thru 0x7F
+				if (bytes[0] >= ' ' && bytes[0] != charpos)
+					SetCharPos(bytes[0]);	// same as ASCII
 
-				if ((charpos != uniChar[0])
-				&& (uniChar[0] >= 32)) {
-					SetCharPos(uniChar[0]);
-				}
 				BView::KeyDown(bytes, numBytes);
 				break;
 			}
 		}
+	} else {
+		uint32 utf32 = BUnicodeChar::FromUTF8(&bytes);
+
+		if (utf32 != charpos)
+			SetCharPos(utf32);
+
+		BView::KeyDown(bytes, numBytes);
 	}
 }
 
