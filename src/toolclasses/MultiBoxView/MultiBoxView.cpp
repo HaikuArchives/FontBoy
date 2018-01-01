@@ -83,7 +83,7 @@ void MultiBoxView::UpdateProperties()
 {
 	BRect rect = Bounds();
 
-	numrows = floor(rect.bottom / rowheight);
+	numrows = floor((rect.bottom + 1) / rowheight);
 	colwidth = rect.right / numcols;
 }
 

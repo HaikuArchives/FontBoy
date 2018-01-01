@@ -344,6 +344,9 @@ void ListView::Init()
 
 	UpdateScrollBar();
 	CalcLeader();
+
+	const int numRows = fontlist->CountFonts() / (int) GetNumCols();
+	fHeight = rheight * numRows + B_H_SCROLL_BAR_HEIGHT;
 }
 
 // needs ScrollBarUpdate before Call!
