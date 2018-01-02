@@ -47,7 +47,7 @@ void CharView::Draw(BRect urect)
 	SetHighColor(displayColor);
 
 	if (drawmode) {
-		font.SetSize(urect.Width() * 0.8);
+		font.SetSize(urect.Width() * 0.6);
 		font.GetHeight(&fheight);
 
 		//  Unicode to UTF8 Character encoding

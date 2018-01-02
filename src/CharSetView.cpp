@@ -58,7 +58,7 @@ void CharSetView::Draw(BRect urect)
 
 	if (drawmode) {
 		float fh = (colwidth > rowheight) ? rowheight : colwidth;
-		font.SetSize(fh * 0.8);
+		font.SetSize(fh * 0.6);
 		font.GetHeight(&fheight);
 		SetFont(&font);
 
