@@ -745,7 +745,7 @@ void TopView::AttachedToWindow(void)
 	currascii_value->SetFont(&font);
  	AddChild(currascii_value);
 
-	trect.right = trect.left + 4;
+	trect.right = trect.left - 2;
 	trect.left = trect.right - 60;
 	currascii = new BStringView(trect, B_EMPTY_STRING, "Selected: ", B_FOLLOW_RIGHT | B_FOLLOW_TOP);
 	currascii->SetAlignment(B_ALIGN_RIGHT);
@@ -760,7 +760,7 @@ void TopView::AttachedToWindow(void)
 	rangeascii_value->SetFont(&font);
  	AddChild(rangeascii_value);
 
-	trect.right = trect.left + 4;
+	trect.right = trect.left - 2;
 	trect.left = trect.right - 60;
 	rangeascii = new BStringView(trect, B_EMPTY_STRING, "Pagerange: ", B_FOLLOW_RIGHT | B_FOLLOW_TOP);
 	rangeascii->SetAlignment(B_ALIGN_RIGHT);
