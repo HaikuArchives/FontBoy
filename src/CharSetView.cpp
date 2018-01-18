@@ -269,7 +269,11 @@ void CharSetView::MouseDown(BPoint point)
 
 void CharSetView::KeyDown(const char *bytes, int32 numBytes)
 {
-	if (numBytes == 1) {
+	bool isValid = true;
+
+	if (numBytes < 1 || numBytes > 4)
+		isValid = false;
+	else if (numBytes == 1)
 		switch (bytes[0]) {
 			case B_LEFT_ARROW:
 				// move to previous char in UTF8 Format
@@ -301,31 +305,39 @@ void CharSetView::KeyDown(const char *bytes, int32 numBytes)
 			
 			case B_HOME:
 				// move to index 0
-				SetCharPos(0);
-				break;
-				
-			case B_TAB:
-				// keyboard navigation
-				BView::KeyDown(bytes, numBytes);
+				if (charpos != 0)
+					SetCharPos(0);
 				break;
 
-			default: {
+			default:
 				// 1-byte UTF-8 encoding, code point range: 0 thru 0x7F
-				if (bytes[0] >= ' ' && bytes[0] != charpos)
+				if (bytes[0] < ' ')	// skip non-printing characters, too
+					isValid = false;
+				else if (bytes[0] != charpos)
 					SetCharPos(bytes[0]);	// same as ASCII
-
-				BView::KeyDown(bytes, numBytes);
-				break;
-			}
 		}
-	} else {
-		uint32 utf32 = BUnicodeChar::FromUTF8(&bytes);
+	else {	// multibyte UTF-8 encoding
+		uint8 numBits = numBytes + 1;	// number of prefix bits in first byte
+		uint8 mask = (1 << numBits) - 1;	// 111, 1111, or 11111
 
-		if (utf32 != charpos)
-			SetCharPos(utf32);
+		// prefix bits of first byte must be 110, 1110, or 11110
+		isValid = ((unsigned) bytes[0] >> 8 - numBits & mask) == mask - 1;
 
-		BView::KeyDown(bytes, numBytes);
+		// prefix bits of subsequent bytes must be 10
+		for (int i = 1; isValid && i < numBytes; i++)
+			if ((bytes[i] & 0xC0) != 0x80)
+				isValid = false;
+
+		if (isValid) {
+			uint32 utf32 = BUnicodeChar::FromUTF8(&bytes);
+
+			if (utf32 != charpos)
+				SetCharPos(utf32);
+		}
 	}
+
+	if (!isValid)
+		BView::KeyDown(bytes, numBytes);
 }
 
 int32 CharSetView::GetPageStartPos()
