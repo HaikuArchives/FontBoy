@@ -95,7 +95,7 @@ class Prefs
 				int		GetSplitPanePos(void);
 				void	SetSplitPanePos(int pos);
 
-	static const float	FM_ROWHEIGHT_BUFFER = 12;
+	static const float	FM_ROWHEIGHT_BUFFER;
 
 
 	private:

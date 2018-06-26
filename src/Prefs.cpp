@@ -15,6 +15,8 @@
 #include "TPreferences.h"
 #include "Prefs.h"
 
+const float	Prefs::FM_ROWHEIGHT_BUFFER = 12;
+
 // Open the settings file and read the data.
 Prefs::Prefs()
 {
