@@ -29,26 +29,27 @@ The detail window shows you further information about the selected font and grap
 
 Preferences
 ===========
-To change the application settings open the preferences from the menu Edit.
-General let you toggle the splashscreen when starting Fontboy and turn off the ToolTips.
-List let you adjust the appearance of the fontlist in the main window. 
-Details let you adjust the appearance of the detail window. 
-When Live update! is selected ALL settings will be applied immediately.
+To change the application settings open the preferences from the menu Edit.  
+General let you toggle the splashscreen when starting Fontboy and turn off the ToolTips.  
+List let you adjust the appearance of the fontlist in the main window.  
+Details let you adjust the appearance of the detail window.  
+When Live update! is selected all settings will be applied immediately.
 
 
 Tips
 ====
 - Drag & drop of a font in main window also sends a FFont object but there are not a lot of applications that support it.
 
+
 Contact
 =======
-Web: madison.hopto.org
-EMail: oliver.kohl@gmx.net
-ICQ: 5405848
+Web: http://fontboy.sourceforge.net
+EMail: fontboyapp@gmail.com  
+
 
 Credits
 =======
-Splashscreen image by Thomas 'tHOM!' Einweg
+Splashscreen image by Thomas 'tHOM!' Einweg  
 Coding & additional graphics by Oliver 'Madison' Kohl
 
 Thanks and regards must go to:
