@@ -43,9 +43,9 @@ Tips
 
 Contact
 =======
-Web: http://fontboy.sourceforge.net  
+Web: [fontboy.sourceforge.net](http://fontboy.sourceforge.net)  
 EMail: fontboyapp@gmail.com  
-
+Twitter: [@fontboy](https://twitter.com/fontboy)
 
 Credits
 =======
