@@ -43,7 +43,7 @@ Tips
 
 Contact
 =======
-Web: http://fontboy.sourceforge.net
+Web: http://fontboy.sourceforge.net  
 EMail: fontboyapp@gmail.com  
 
 
