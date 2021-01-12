@@ -23,6 +23,7 @@
 #include <os/support/ByteOrder.h>
 #endif
 
+#include <netinet/in.h>
 #include <string.h>
 
 // ----------------------- Constructors -----------------------
